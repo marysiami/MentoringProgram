@@ -169,8 +169,7 @@ namespace WindowsFormsApp
                     DirSearchOption = checkBox2.Checked ? System.IO.SearchOption.TopDirectoryOnly : System.IO.SearchOption.AllDirectories
                 };
 
-               visitor = new FileSystemVisitor(ReaderService.GetFilteredFilesTree, path, filter);
-               LastNodeIndex = visitor.LastNodeIndex;
+               visitor = new FileSystemVisitor(ReaderService.GetFilteredFilesTree, path, filter);               
             }
             else
             {
