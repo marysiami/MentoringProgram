@@ -7,13 +7,13 @@ namespace WindowsFormsApp
     public partial class FileSystemForm : Form
     {
         private IFileSystemService ReaderService { get; set; }
+        private int LastNodeIndex = 0;
 
         public FileSystemForm()
         {
             InitializeComponent();
             ReaderService = (IFileSystemService)Program.ServiceProvider.GetService(typeof(IFileSystemService));
             RegisterEvents();
-            resultTree.Nodes.Clear();
         }
         private void RegisterEvents()
         {
@@ -28,22 +28,63 @@ namespace WindowsFormsApp
         #region events
         private void ReaderService_FilteredDirectoryFoundEvent(object sender, string e)
         {
-            resultTree.Nodes.Add(e);
+            if (FDirStop.Checked == true)
+            {
+                resultTree.Enabled = false;
+            }
+
+            if (FDirEx.Checked == false)
+            {
+                resultTree.Nodes.Add(e);
+            }
+             
         }
 
         private void ReaderService_FilteredFileFoundEvent(object sender, BusinessLogic.TreeNode e)
         {
-            resultTree.Nodes[e.DirectoryId].Nodes.Add(e.FileName);
+            if (FFileStop.Checked == true)
+            {
+                resultTree.Enabled = false;
+            }
+
+            if (FFilesEx.Checked == false)
+            {
+                if (resultTree.Nodes.Count > 0 && resultTree.Nodes[e.DirectoryId] != null)
+                {
+                    resultTree.Nodes[e.DirectoryId].Nodes.Add(e.FileName);
+                }
+            }
+                     
         }
 
         private void ReaderService_DirectoryFoundEvent(object sender, string e)
-        { 
-           resultTree.Nodes.Add(e); 
+        {
+            if (DirStop.Checked == true)
+            {
+                resultTree.Enabled = false;
+            }
+
+            if (DirEx.Checked == false)
+            {
+                resultTree.Nodes.Add(e);
+            }
         }
 
         private void ReaderService_FileFoundEvent(object sender, BusinessLogic.TreeNode e)
         {
-            resultTree.Nodes[e.DirectoryId].Nodes.Add(e.FileName);
+            if (FileStop.Checked == true)
+            {
+                resultTree.Enabled = false;
+            }
+
+            if (FilesEx.Checked == false)
+            {
+                if (resultTree.Nodes.Count > 0 && resultTree.Nodes[e.DirectoryId] != null)
+                {
+                    resultTree.Nodes[e.DirectoryId].Nodes.Add(e.FileName);
+                }
+            }
+            
         }
 
         private void Visitor_FinishedEvent(object sender, string e)
@@ -82,6 +123,10 @@ namespace WindowsFormsApp
                 textBox2.Visible = true;
                 textBox3.Visible = true;
                 checkBox2.Visible = true;
+                FDirEx.Visible = true;
+                FDirStop.Visible = true;
+                FFilesEx.Visible = true;
+                FFileStop.Visible = true;
             }
             else
             {
@@ -92,13 +137,17 @@ namespace WindowsFormsApp
                 label6.Visible = false;
                 textBox2.Visible = false;
                 textBox3.Visible = false;
-                checkBox2.Visible = false;
+                checkBox2.Visible = false; 
+                FDirEx.Visible = false;
+                FDirStop.Visible = false;
+                FFilesEx.Visible = false;
+                FFileStop.Visible = false;
             }
         }
 
         private void ButtonStart_Click(object sender, EventArgs e)
         {
-            resultTree.Nodes.Clear();
+            resultTree.Enabled = true;
             noPathLabel.Visible = false;
 
             var path = textBox1.Text;
@@ -107,23 +156,28 @@ namespace WindowsFormsApp
                 noPathLabel.Visible = true;
                 return;
             }
-            
+
+            FileSystemVisitor visitor;
+
             if (addFiltersLabel.Checked)
             {
                 Filter filter = new Filter
                 {
+                    LastNodeIndex = this.LastNodeIndex,
                     DirSearchPattern = textBox2.Text,
                     FileSearchPattern = textBox3.Text,
                     DirSearchOption = checkBox2.Checked ? System.IO.SearchOption.TopDirectoryOnly : System.IO.SearchOption.AllDirectories
                 };
 
-               var visitor = new FileSystemVisitor(ReaderService.GetFilteredFilesTree, path, filter);
+               visitor = new FileSystemVisitor(ReaderService.GetFilteredFilesTree, path, filter);
+               LastNodeIndex = visitor.LastNodeIndex;
             }
             else
             {
-               var visitor = new FileSystemVisitor(ReaderService.GetFilesTree, path, null);
+               visitor = new FileSystemVisitor(ReaderService.GetFilesTree, path, new Filter { LastNodeIndex = this.LastNodeIndex });               
             }
-            
+
+            LastNodeIndex = visitor.LastNodeIndex;
         }
     }
 }

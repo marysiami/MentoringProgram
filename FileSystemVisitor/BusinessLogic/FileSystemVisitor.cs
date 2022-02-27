@@ -4,9 +4,11 @@ namespace BusinessLogic.FileSystemVisitor
 {
     public class FileSystemVisitor
     {
-        public FileSystemVisitor(Action<string,Filter> getTreeAction, string path, Filter filter)
-        {            
-            getTreeAction(path, filter);
+        public int LastNodeIndex { get; } = 0;
+        public FileSystemVisitor(Func<string,Filter,int> getTreeAction, string path, Filter filter)
+        {
+            LastNodeIndex = getTreeAction(path, filter);
         }        
+
     }
 }

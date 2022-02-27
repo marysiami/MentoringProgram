@@ -13,14 +13,11 @@ namespace BusinessLogic.FileSystemVisitor
         public event EventHandler<string> DirectoryFoundEvent;
         public event EventHandler<string> FilteredDirectoryFoundEvent;
 
-        public void GetFilteredFilesTree(string path, Filter filter)
+        public int GetFilteredFilesTree(string path, Filter filter)
         {
             StartedEvent?.Invoke(this, path);
 
-            if (string.IsNullOrEmpty(path))
-                return;
-
-            Stack<string> dirs = new Stack<string>(30);
+            Stack<string> dirs = new Stack<string>();
 
             if (!Directory.Exists(path))
             {
@@ -28,7 +25,7 @@ namespace BusinessLogic.FileSystemVisitor
             }
             dirs.Push(path);
 
-            int i = 0;
+            int i = filter.LastNodeIndex;
 
             while (dirs.Count > 0)
             {
@@ -58,16 +55,15 @@ namespace BusinessLogic.FileSystemVisitor
             }
 
             FinishedEvent?.Invoke(this, path);
+
+            return i;
         }
 
-        public void GetFilesTree(string path, Filter filter)
+        public int GetFilesTree(string path, Filter filter)
         {
             StartedEvent?.Invoke(this, path);
 
-            if (string.IsNullOrEmpty(path))
-                return;
-
-            Stack<string> dirs = new Stack<string>(30);
+            Stack<string> dirs = new Stack<string>();
 
             if (!Directory.Exists(path))
             {
@@ -75,7 +71,7 @@ namespace BusinessLogic.FileSystemVisitor
             }
             dirs.Push(path);
 
-            int i = 0;
+            int i = filter.LastNodeIndex;
 
             while (dirs.Count > 0)
             {
@@ -105,6 +101,8 @@ namespace BusinessLogic.FileSystemVisitor
             }
 
             FinishedEvent?.Invoke(this, path);
+
+            return i;
         }
 
         public string[] GetDirectories(string path, string searchPattern, SearchOption searchOption)

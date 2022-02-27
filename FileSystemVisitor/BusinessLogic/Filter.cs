@@ -8,5 +8,7 @@ namespace BusinessLogic.FileSystemVisitor
         public SearchOption DirSearchOption { get; set; }
         public string FileSearchPattern { get; set; } = string.Empty;
 
+        public int LastNodeIndex { get; set; }
+
     }    
 }

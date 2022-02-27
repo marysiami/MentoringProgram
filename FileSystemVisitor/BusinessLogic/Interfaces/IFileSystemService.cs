@@ -11,7 +11,7 @@ namespace BusinessLogic.FileSystemVisitor
         public event EventHandler<string> DirectoryFoundEvent;
         public event EventHandler<string> FilteredDirectoryFoundEvent;
 
-        public void GetFilteredFilesTree(string path, Filter filter);
-        public void GetFilesTree(string path, Filter filter);
+        public int GetFilteredFilesTree(string path, Filter filter);
+        public int GetFilesTree(string path, Filter filter);
     }
 }
