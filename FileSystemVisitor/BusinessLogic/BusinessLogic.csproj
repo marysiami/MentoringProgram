@@ -44,9 +44,11 @@
   <ItemGroup>
     <Compile Include="FileSystemVisitor.cs" />
     <Compile Include="Filter.cs" />
+    <Compile Include="Interfaces\IFileProvider.cs" />
     <Compile Include="Interfaces\IFileSystemService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\FileSystemService.cs" />
+    <Compile Include="Services\PhysicalFileProvider.cs" />
     <Compile Include="TreeNode.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

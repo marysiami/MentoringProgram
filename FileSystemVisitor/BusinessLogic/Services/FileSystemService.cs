@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace BusinessLogic.FileSystemVisitor
+namespace BusinessLogic
 {
     public class FileSystemService : IFileSystemService
     {
@@ -13,19 +13,34 @@ namespace BusinessLogic.FileSystemVisitor
         public event EventHandler<string> DirectoryFoundEvent;
         public event EventHandler<string> FilteredDirectoryFoundEvent;
 
+        private readonly IFileProvider _fileProvider;
+        public FileSystemService(IFileProvider fileProvider)
+        {
+            _fileProvider = fileProvider;
+        }
+        public FileSystemService() { }
+
         public int GetFilteredFilesTree(string path, Filter filter)
         {
             StartedEvent?.Invoke(this, path);
 
             Stack<string> dirs = new Stack<string>();
 
-            if (!Directory.Exists(path))
+            if (!_fileProvider.DirectoryExist(path))
             {
                 throw new ArgumentException();
             }
             dirs.Push(path);
 
-            int i = filter.LastNodeIndex;
+            int i = 0;
+            if (filter != null)
+            {
+                i = filter.LastNodeIndex;
+            }
+            else
+            {
+                filter = new Filter(0);
+            }
 
             while (dirs.Count > 0)
             {
@@ -65,13 +80,18 @@ namespace BusinessLogic.FileSystemVisitor
 
             Stack<string> dirs = new Stack<string>();
 
-            if (!Directory.Exists(path))
+            if (!_fileProvider.DirectoryExist(path))
             {
                 throw new ArgumentException();
             }
+
             dirs.Push(path);
 
-            int i = filter.LastNodeIndex;
+            int i = 0;
+            if (filter != null)
+            {
+                i = filter.LastNodeIndex;
+            }
 
             while (dirs.Count > 0)
             {
@@ -111,11 +131,11 @@ namespace BusinessLogic.FileSystemVisitor
             {
                 if (!string.IsNullOrEmpty(searchPattern))
                 {
-                    return Directory.GetDirectories(path, searchPattern,searchOption);                   
+                    return _fileProvider.GetDirectories(path, searchPattern,searchOption);                   
                 }
                 else
                 {
-                    return Directory.GetDirectories(path);
+                    return _fileProvider.GetDirectories(path);
                 }                              
             }
             catch (UnauthorizedAccessException e)
@@ -136,11 +156,11 @@ namespace BusinessLogic.FileSystemVisitor
             {
                 if (!string.IsNullOrEmpty(searchPattern))
                 {                    
-                    return Directory.GetFiles(path, searchPattern);                    
+                    return _fileProvider.GetFiles(path, searchPattern);                    
                 }
                 else
                 {
-                    return Directory.GetFiles(path);
+                    return _fileProvider.GetFiles(path);
                 }
             }
             catch (UnauthorizedAccessException e)

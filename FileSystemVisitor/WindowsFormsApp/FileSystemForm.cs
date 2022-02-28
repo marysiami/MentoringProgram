@@ -1,4 +1,4 @@
-﻿using BusinessLogic.FileSystemVisitor;
+﻿using BusinessLogic;
 using System;
 using System.Windows.Forms;
 
@@ -161,19 +161,17 @@ namespace WindowsFormsApp
 
             if (addFiltersLabel.Checked)
             {
-                Filter filter = new Filter
-                {
-                    LastNodeIndex = this.LastNodeIndex,
-                    DirSearchPattern = textBox2.Text,
-                    FileSearchPattern = textBox3.Text,
-                    DirSearchOption = checkBox2.Checked ? System.IO.SearchOption.TopDirectoryOnly : System.IO.SearchOption.AllDirectories
-                };
+                Filter filter = new Filter(this.LastNodeIndex, 
+                    textBox2.Text, 
+                    checkBox2.Checked ? System.IO.SearchOption.TopDirectoryOnly : System.IO.SearchOption.AllDirectories,
+                    textBox3.Text);
+               
 
                visitor = new FileSystemVisitor(ReaderService.GetFilteredFilesTree, path, filter);               
             }
             else
             {
-               visitor = new FileSystemVisitor(ReaderService.GetFilesTree, path, new Filter { LastNodeIndex = this.LastNodeIndex });               
+               visitor = new FileSystemVisitor(ReaderService.GetFilesTree, path, new Filter (this.LastNodeIndex));               
             }
 
             LastNodeIndex = visitor.LastNodeIndex;

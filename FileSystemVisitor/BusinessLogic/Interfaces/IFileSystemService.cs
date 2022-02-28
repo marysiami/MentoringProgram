@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BusinessLogic.FileSystemVisitor
+namespace BusinessLogic
 {
     public interface IFileSystemService
     {
