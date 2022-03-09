@@ -7,21 +7,15 @@ namespace Task2
     {
         public int Parse(string stringValue)
         {
-            if (string.IsNullOrEmpty(stringValue))
+            
+            if(stringValue == null)
             {
-                if(stringValue == null)
-                {
-                    throw new ArgumentNullException();
-                }
-                else
-                {
-                    throw new FormatException();
-                }
-            }
+                throw new ArgumentNullException();
+            }           
 
             stringValue = stringValue.Trim();
 
-            if (!Regex.IsMatch(stringValue, @"[\d++-]$"))
+            if (!Regex.IsMatch(stringValue, @"^[\+\-\d]?\d+$"))
             {
                 throw new FormatException();
             }

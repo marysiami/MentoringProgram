@@ -6,19 +6,20 @@ namespace Task1
     {
         private static void Main(string[] args)
         {
-            while (true)
+            var value = Console.ReadLine();
+
+            while (value != null)
             {
-                var value = Console.ReadLine();
                 try
                 {
                     Console.WriteLine(value[0]);
                 }
                 catch(IndexOutOfRangeException ex)
                 {
-                    Console.WriteLine("string is null or empty \nError: "+ ex.Message);
-                    break;
+                    Console.WriteLine("string is empty \nError: "+ ex.Message);                 
                 }
-                
+
+                value = Console.ReadLine();
             }   
         }
     }
