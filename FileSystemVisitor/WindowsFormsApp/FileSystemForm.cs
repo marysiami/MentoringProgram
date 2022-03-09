@@ -28,77 +28,77 @@ namespace WindowsFormsApp
         #region events
         private void ReaderService_FilteredDirectoryFoundEvent(object sender, string e)
         {
-            if (FDirStop.Checked == true)
-            {
-                resultTree.Enabled = false;
-            }
+            //if (FDirStop.Checked == true)
+            //{
+            //    resultTree.Enabled = false;
+            //}
 
-            if (FDirEx.Checked == false)
-            {
-                resultTree.Nodes.Add(e);
-            }
+            //if (FDirEx.Checked == false)
+            //{
+            //    resultTree.Nodes.Add(e);
+            //}
              
         }
 
-        private void ReaderService_FilteredFileFoundEvent(object sender, BusinessLogic.TreeNode e)
+        private void ReaderService_FilteredFileFoundEvent(object sender, string e)
         {
-            if (FFileStop.Checked == true)
-            {
-                resultTree.Enabled = false;
-            }
+            //if (FFileStop.Checked == true)
+            //{
+            //    resultTree.Enabled = false;
+            //}
 
-            if (FFilesEx.Checked == false)
-            {
-                if (resultTree.Nodes.Count > 0 && resultTree.Nodes[e.DirectoryId] != null)
-                {
-                    resultTree.Nodes[e.DirectoryId].Nodes.Add(e.FileName);
-                }
-            }
+            //if (FFilesEx.Checked == false)
+            //{
+            //    if (resultTree.Nodes.Count > 0 && resultTree.Nodes[e.DirectoryId] != null)
+            //    {
+            //        resultTree.Nodes[e.DirectoryId].Nodes.Add(e.FileName);
+            //    }
+            //}
                      
         }
 
         private void ReaderService_DirectoryFoundEvent(object sender, string e)
         {
-            if (DirStop.Checked == true)
-            {
-                resultTree.Enabled = false;
-            }
+            //if (DirStop.Checked == true)
+            //{
+            //    resultTree.Enabled = false;
+            //}
 
-            if (DirEx.Checked == false)
-            {
-                resultTree.Nodes.Add(e);
-            }
+            //if (DirEx.Checked == false)
+            //{
+            //    resultTree.Nodes.Add(e);
+            //}
         }
 
-        private void ReaderService_FileFoundEvent(object sender, BusinessLogic.TreeNode e)
+        private void ReaderService_FileFoundEvent(object sender, string e)
         {
-            if (FileStop.Checked == true)
-            {
-                resultTree.Enabled = false;
-            }
+            //if (FileStop.Checked == true)
+            //{
+            //    resultTree.Enabled = false;
+            //}
 
-            if (FilesEx.Checked == false)
-            {
-                if (resultTree.Nodes.Count > 0 && resultTree.Nodes[e.DirectoryId] != null)
-                {
-                    resultTree.Nodes[e.DirectoryId].Nodes.Add(e.FileName);
-                }
-            }
+            //if (FilesEx.Checked == false)
+            //{
+            //    if (resultTree.Nodes.Count > 0 && resultTree.Nodes[e.DirectoryId] != null)
+            //    {
+            //        resultTree.Nodes[e.DirectoryId].Nodes.Add(e.FileName);
+            //    }
+            //}
             
         }
 
         private void Visitor_FinishedEvent(object sender, string e)
         {
-            stopLabel.Text =$"Process finished for path: {e}";
-            stopLabel.Visible = true;
-            resultTree.EndUpdate();
+            //stopLabel.Text =$"Process finished for path: {e}";
+            //stopLabel.Visible = true;
+            //resultTree.EndUpdate();
         }
 
         private void Visitor_StartedEvent(object sender, string e)
         {
-            startLabel.Text = $"Process started for path: {e}";
-            startLabel.Visible = true;
-            resultTree.BeginUpdate();
+            //startLabel.Text = $"Process started for path: {e}";
+            //startLabel.Visible = true;
+            //resultTree.BeginUpdate();
         }
         #endregion
 
@@ -167,11 +167,31 @@ namespace WindowsFormsApp
                     textBox3.Text);
                
 
-               visitor = new FileSystemVisitor(ReaderService.GetFilteredFilesTree, path, filter);               
+               visitor = new FileSystemVisitor(ReaderService, path, filter);               
             }
             else
             {
-               visitor = new FileSystemVisitor(ReaderService.GetFilesTree, path, new Filter (this.LastNodeIndex));               
+               visitor = new FileSystemVisitor(ReaderService, path, new Filter (this.LastNodeIndex));               
+            }
+
+            foreach(var dir in visitor.DirTree)
+            {
+                TreeNode node;
+
+                if(dir.ParentID != null)
+                {
+                   // node = resultTree;
+                }
+                else
+                {
+                    node = resultTree.Nodes.Add(dir.Path);
+                }                
+
+                foreach(var file in dir.Files)
+                {
+                    //resultTree.Nodes[node.Index].Nodes.Add(file);
+                }
+
             }
 
             LastNodeIndex = visitor.LastNodeIndex;

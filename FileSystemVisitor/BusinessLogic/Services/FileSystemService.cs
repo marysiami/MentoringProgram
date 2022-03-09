@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace BusinessLogic
 {
@@ -8,8 +9,8 @@ namespace BusinessLogic
     {
         public event EventHandler<string> StartedEvent;
         public event EventHandler<string> FinishedEvent;
-        public event EventHandler<TreeNode> FileFoundEvent;
-        public event EventHandler<TreeNode> FilteredFileFoundEvent;
+        public event EventHandler<string> FileFoundEvent;
+        public event EventHandler<string> FilteredFileFoundEvent;
         public event EventHandler<string> DirectoryFoundEvent;
         public event EventHandler<string> FilteredDirectoryFoundEvent;
 
@@ -19,111 +20,89 @@ namespace BusinessLogic
             _fileProvider = fileProvider;
         }
         public FileSystemService() { }
-
-        public int GetFilteredFilesTree(string path, Filter filter)
+        public List<DirectoryNode> GetTree(string path, Filter filter)
         {
             StartedEvent?.Invoke(this, path);
 
-            Stack<string> dirs = new Stack<string>();
+            var dirs = new Stack<DirectoryNode>();
+            var result = new List<DirectoryNode>();
+            var temp = new List<DirectoryNode>();
+
+            int i = 0;
+            int fileIndex = 0;
+            int dirIndex = 0;
 
             if (!_fileProvider.DirectoryExist(path))
             {
                 throw new ArgumentException();
             }
-            dirs.Push(path);
 
-            int i = 0;
-            if (filter != null)
-            {
-                i = filter.LastNodeIndex;
-            }
-            else
-            {
-                filter = new Filter(0);
-            }
+            var mainDir = new DirectoryNode { 
+                Path = path, 
+                DirectoryID = dirIndex
+            };
+
+            dirs.Push(mainDir);
 
             while (dirs.Count > 0)
             {
-                string currentDir = dirs.Pop();
+                var currentDir = dirs.Pop();
 
-                FilteredDirectoryFoundEvent?.Invoke(this, currentDir);
+                var dirNode = new DirectoryNode
+                {
+                    DirectoryID = dirIndex,
+                    Path = currentDir.Path,
+                    ParentID = currentDir.ParentID,
+                };
 
-                string[] subDirs = GetDirectories(currentDir, filter.DirSearchPattern, filter.DirSearchOption);
+                
+                FilteredDirectoryFoundEvent?.Invoke(this, currentDir.Path);
 
-                string[] files = GetFiles(currentDir, filter.FileSearchPattern);
+                string[] subDirs = GetDirectories(currentDir.Path, filter.DirSearchPattern, filter.DirSearchOption);
 
+                string[] files = GetFiles(currentDir.Path, filter.FileSearchPattern);
+
+             
                 foreach (var file in GetFilesInfo(files))
                 {
-                    var node = new TreeNode
-                    {
-                        FileName = file.Name,
-                        DirectoryId = i
-                    };
-
-                    FilteredFileFoundEvent?.Invoke(this, node);
+                    dirNode.Files.Add(file.Name);
+                    FilteredFileFoundEvent?.Invoke(this, file.Name);
+                    fileIndex++;
                 }
 
                 foreach (string str in subDirs)
-                    dirs.Push(str);
-
-                i++;
-            }
-
-            FinishedEvent?.Invoke(this, path);
-
-            return i;
-        }
-
-        public int GetFilesTree(string path, Filter filter)
-        {
-            StartedEvent?.Invoke(this, path);
-
-            Stack<string> dirs = new Stack<string>();
-
-            if (!_fileProvider.DirectoryExist(path))
-            {
-                throw new ArgumentException();
-            }
-
-            dirs.Push(path);
-
-            int i = 0;
-            if (filter != null)
-            {
-                i = filter.LastNodeIndex;
-            }
-
-            while (dirs.Count > 0)
-            {
-                string currentDir = dirs.Pop();
-
-                DirectoryFoundEvent?.Invoke(this, currentDir);
-
-                string[] subDirs = GetDirectories(currentDir, null, SearchOption.AllDirectories);
-
-                string[] files = GetFiles(currentDir, null);
-
-                foreach(var file in GetFilesInfo(files))
                 {
-                    var node = new TreeNode
-                    {
-                        FileName = file.Name,
-                        DirectoryId = i
-                    };
-
-                    FileFoundEvent?.Invoke(this, node);
+                    var child = new DirectoryNode { Path = str, ParentID = currentDir.DirectoryID };
+                    dirs.Push(child);
                 }
 
-                foreach (string str in subDirs)
-                    dirs.Push(str);
+                temp.Add(dirNode);
 
                 i++;
+                dirIndex++;
+            }
+
+            var parentsIDs = temp.Select(temp => temp.ParentID);
+
+            foreach(var id in parentsIDs)
+            {
+                var parent = temp.Find(x => x.DirectoryID == id);
+
+                if (id != null)
+                {
+                    var subDir = temp.Where(x => x.ParentID == id);
+             
+                    parent.Children.AddRange(subDir);
+                }                  
+
+                result.Add(parent);
             }
 
             FinishedEvent?.Invoke(this, path);
 
-            return i;
-        }
+            return result;
+
+        }      
 
         public string[] GetDirectories(string path, string searchPattern, SearchOption searchOption)
         {

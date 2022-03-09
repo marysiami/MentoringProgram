@@ -13,6 +13,7 @@ namespace WindowsFormsApp
         {
             var services = new ServiceCollection();
             services.AddTransient<IFileSystemService, FileSystemService>();
+            services.AddSingleton<IFileProvider, PhysicalFileProvider>();
             ServiceProvider = services.BuildServiceProvider();
         }
 

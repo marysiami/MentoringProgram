@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BusinessLogic
 {
@@ -6,12 +7,11 @@ namespace BusinessLogic
     {
         public event EventHandler<string> StartedEvent;
         public event EventHandler<string> FinishedEvent;
-        public event EventHandler<TreeNode> FileFoundEvent;
-        public event EventHandler<TreeNode> FilteredFileFoundEvent;
+        public event EventHandler<string> FileFoundEvent;
+        public event EventHandler<string> FilteredFileFoundEvent;
         public event EventHandler<string> DirectoryFoundEvent;
         public event EventHandler<string> FilteredDirectoryFoundEvent;
 
-        public int GetFilteredFilesTree(string path, Filter filter);
-        public int GetFilesTree(string path, Filter filter);
+        List<DirectoryNode> GetTree(string path, Filter filter);
     }
 }
