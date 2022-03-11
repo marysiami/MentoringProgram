@@ -2,13 +2,12 @@
 
 namespace BusinessLogic
 {
-    public class DirectoryNode
+    public class TreeNode
     {
         public int DirectoryID { get; set; }
         public string Path { get; set; }
         public int? ParentID { get; set; }
-        public List<string> Files { get; set; } = new List<string>();
-        public List<DirectoryNode> Children { get; set; }=  new List<DirectoryNode>();
+        public List<TreeNode> Nodes { get; set; }=  new List<TreeNode>();
     }
    
 }

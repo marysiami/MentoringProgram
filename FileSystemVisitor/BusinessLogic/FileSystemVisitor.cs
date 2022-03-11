@@ -4,16 +4,21 @@ namespace BusinessLogic
 {
     public class FileSystemVisitor
     {
+        public delegate Filter GetFilter();
         private readonly IFileSystemService _fileSystemService;
 
-        public int LastNodeIndex { get; } = 0;
-        public List<DirectoryNode> DirTree { get; set; }
-                
-        public FileSystemVisitor(IFileSystemService fileSystemService, string path, Filter filter)
+        private TreeNode DirTree { get; set; }
+
+        public FileSystemVisitor(IFileSystemService fileSystemService, string path, GetFilter getFilter)
         {
             _fileSystemService = fileSystemService;
 
-            DirTree = _fileSystemService.GetTree(path,filter);
+            DirTree = _fileSystemService.GetTree(path, getFilter());
+        }
+
+        public TreeNode GetDirectoryTree()
+        {
+            return DirTree;
         }
 
     }

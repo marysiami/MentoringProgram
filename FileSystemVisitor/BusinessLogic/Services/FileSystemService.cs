@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace BusinessLogic
 {
@@ -19,144 +20,164 @@ namespace BusinessLogic
         {
             _fileProvider = fileProvider;
         }
-        public FileSystemService() { }
-        public List<DirectoryNode> GetTree(string path, Filter filter)
+       
+        public TreeNode GetTree(string path, Filter filter)
         {
             StartedEvent?.Invoke(this, path);
 
-            var dirs = new Stack<DirectoryNode>();
-            var result = new List<DirectoryNode>();
-            var temp = new List<DirectoryNode>();
-
-            int i = 0;
-            int fileIndex = 0;
-            int dirIndex = 0;
+            var directoriesStack = new Stack<TreeNode>();
 
             if (!_fileProvider.DirectoryExist(path))
             {
                 throw new ArgumentException();
             }
 
-            var mainDir = new DirectoryNode { 
+            var mainDir = new TreeNode { 
                 Path = path, 
-                DirectoryID = dirIndex
             };
 
-            dirs.Push(mainDir);
+            directoriesStack.Push(mainDir);
 
-            while (dirs.Count > 0)
+            while (directoriesStack.Count > 0)
             {
-                var currentDir = dirs.Pop();
+                var currentDir = directoriesStack.Pop();
 
-                var dirNode = new DirectoryNode
-                {
-                    DirectoryID = dirIndex,
-                    Path = currentDir.Path,
-                    ParentID = currentDir.ParentID,
-                };
+                List<string> subDirs, files;
 
-                
-                FilteredDirectoryFoundEvent?.Invoke(this, currentDir.Path);
-
-                string[] subDirs = GetDirectories(currentDir.Path, filter.DirSearchPattern, filter.DirSearchOption);
-
-                string[] files = GetFiles(currentDir.Path, filter.FileSearchPattern);
-
-             
+                subDirs = GetDirectories(currentDir.Path,filter);
+                files = GetFiles(currentDir.Path, filter);
+                           
                 foreach (var file in GetFilesInfo(files))
                 {
-                    dirNode.Files.Add(file.Name);
-                    FilteredFileFoundEvent?.Invoke(this, file.Name);
-                    fileIndex++;
+                    currentDir.Nodes.Add(new TreeNode { Path = file.Name });
                 }
 
                 foreach (string str in subDirs)
                 {
-                    var child = new DirectoryNode { Path = str, ParentID = currentDir.DirectoryID };
-                    dirs.Push(child);
+                    var child = new TreeNode { Path = str };
+                    currentDir.Nodes.Add(child);
+                    directoriesStack.Push(child);
                 }
-
-                temp.Add(dirNode);
-
-                i++;
-                dirIndex++;
-            }
-
-            var parentsIDs = temp.Select(temp => temp.ParentID);
-
-            foreach(var id in parentsIDs)
-            {
-                var parent = temp.Find(x => x.DirectoryID == id);
-
-                if (id != null)
-                {
-                    var subDir = temp.Where(x => x.ParentID == id);
-             
-                    parent.Children.AddRange(subDir);
-                }                  
-
-                result.Add(parent);
             }
 
             FinishedEvent?.Invoke(this, path);
 
-            return result;
+            return mainDir;
 
-        }      
+        }
 
-        public string[] GetDirectories(string path, string searchPattern, SearchOption searchOption)
+        public List<string> GetDirectories(string path, Filter filter)
         {
+            var result = new List<string>();
             try
             {
-                if (!string.IsNullOrEmpty(searchPattern))
+                var allDir = _fileProvider.GetDirectories(path).ToList();
+                foreach (var dir in allDir)
                 {
-                    return _fileProvider.GetDirectories(path, searchPattern,searchOption);                   
+                    DirectoryFoundEvent?.Invoke(this, dir);
                 }
-                else
+
+
+                if (filter == null || string.IsNullOrEmpty(filter?.DirSearchPattern))
                 {
-                    return _fileProvider.GetDirectories(path);
+                    result = allDir;
+                }
+                else 
+                { 
+                    Regex rx = new Regex(filter.DirSearchPattern);
+
+                    foreach (var dir in allDir)
+                    {
+                        if (rx.IsMatch(dir))
+                        {
+                            FilteredDirectoryFoundEvent?.Invoke(this, dir);
+
+                            if (filter.FilteredDirStop)
+                            {
+                                return result;
+                            }
+
+                            if (filter.FilteredDirStop)
+                            {
+                                continue;
+                            }
+
+                            result.Add(dir);                                                       
+                        }
+                    }                                   
                 }                              
             }
             catch (UnauthorizedAccessException e)
-            {
-                Console.WriteLine(e.Message);
+            {// log to file
+                //Console.WriteLine(e.Message);
             }
             catch (DirectoryNotFoundException e)
-            {
-                Console.WriteLine(e.Message);
+            {// log to file
+                //Console.WriteLine(e.Message);
             }
 
-            return new string[0];
+            return result;
         }
 
-        public string[] GetFiles(string path, string searchPattern)
+        public List<string> GetFiles(string path, Filter filter)
         {
+            var result = new List<string>();
             try
             {
-                if (!string.IsNullOrEmpty(searchPattern))
+                var allFiles= _fileProvider.GetFiles(path).ToList();
+                foreach (var file in allFiles)
                 {                    
-                    return _fileProvider.GetFiles(path, searchPattern);                    
+                    FileFoundEvent?.Invoke(this, file);
+                }
+
+                if (filter == null || string.IsNullOrEmpty(filter?.FileSearchPattern))
+                {
+                    result = allFiles;
                 }
                 else
                 {
-                    return _fileProvider.GetFiles(path);
+                    Regex rx = new Regex(filter.FileSearchPattern);
+
+                    foreach (var file in allFiles)
+                    {
+                        var fileName = Path.GetFileName(file);
+
+                        if (rx.IsMatch(fileName))
+                        {
+                            FilteredFileFoundEvent?.Invoke(this, file);
+
+                            if (filter.FilteredFileStop)
+                            {
+                                return result;
+                            }
+
+                            if(filter.FilteredFileEx)
+                            {
+                                continue;
+                            }
+                           
+                            result.Add(file);    
+                        }
+                    }
                 }
             }
             catch (UnauthorizedAccessException e)
             {
-                Console.WriteLine(e.Message);
+                // log to file
+                //Console.WriteLine(e.Message);
             }
             catch (DirectoryNotFoundException e)
             {
-                Console.WriteLine(e.Message);
+                // log to file
+                //Console.WriteLine(e.Message);
             }
 
-            return new string[0];
+            return result;
         }
 
-        public IEnumerable<FileInfo> GetFilesInfo(string[] files)
+        public IEnumerable<FileInfo> GetFilesInfo(List<string> files)
         {
-            if (files != null && files.Length > 0)
+            if (files != null && files.Count > 0)
             {
                 foreach (string file in files)
                 {

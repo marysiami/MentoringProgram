@@ -12,6 +12,6 @@ namespace BusinessLogic
         public event EventHandler<string> DirectoryFoundEvent;
         public event EventHandler<string> FilteredDirectoryFoundEvent;
 
-        List<DirectoryNode> GetTree(string path, Filter filter);
+        TreeNode GetTree(string path, Filter filter);
     }
 }

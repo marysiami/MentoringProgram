@@ -18,83 +18,83 @@ namespace BusinessLogic.Test
             new object[] {"C://aaa", null, SearchOption.AllDirectories},
           };
 
-        [Fact]
-        public void GetFilesInfo_ThrowFileNotFoundException_EmptyString()
-        {
-            var service = new FileSystemService();
+        //[Fact]
+        //public void GetFilesInfo_ThrowFileNotFoundException_EmptyString()
+        //{
+        //    var service = new FileSystemService();
 
-            var list = new string[1];
+        //    var list = new string[1];
 
-            list[0] = string.Empty;
+        //    list[0] = string.Empty;
 
-            Assert.Throws<FileNotFoundException>(()=> service.GetFilesInfo(list).ToList());
-        }
+        //    Assert.Throws<FileNotFoundException>(()=> service.GetFilesInfo(list).ToList());
+        //}
 
-        [Fact]
-        public void GetFilesInfo_GetTheSameFullName()
-        {            
-            var service = new FileSystemService();
+        //[Fact]
+        //public void GetFilesInfo_GetTheSameFullName()
+        //{            
+        //    var service = new FileSystemService();
 
-            var list = new string[1];
+        //    var list = new string[1];
 
-            list[0] = "C://aaa";
+        //    list[0] = "C://aaa";
 
-            var expect = new FileInfo(list[0]).FullName;
+        //    var expect = new FileInfo(list[0]).FullName;
 
-            var actual = service.GetFilesInfo(list).ToList()[0].FullName;
+        //    var actual = service.GetFilesInfo(list).ToList()[0].FullName;
 
-            Assert.Equal(expect,actual);
-        }
+        //    Assert.Equal(expect,actual);
+        //}
     
-        [Theory]
-        [InlineData("C://aaa",null)]
-        [InlineData("C://aaa", "f*")]
-        public void GetFiles_CheckedSearchPattern(string path, string searchPattern)
-        {
-            var files = new string[] { "file1.txt", "file2.txt", "file3.txt" };
+        //[Theory]
+        //[InlineData("C://aaa",null)]
+        //[InlineData("C://aaa", "f*")]
+        //public void GetFiles_CheckedSearchPattern(string path, string searchPattern)
+        //{
+        //    var files = new string[] { "file1.txt", "file2.txt", "file3.txt" };
 
-            using (var mock = AutoMock.GetLoose())
-            {
-                mock.Mock<IFileProvider>().Setup(x => x.GetFiles(path, searchPattern))
-                    .Returns(files);
+        //    using (var mock = AutoMock.GetLoose())
+        //    {
+        //        mock.Mock<IFileProvider>().Setup(x => x.GetFiles(path, searchPattern))
+        //            .Returns(files);
 
-                mock.Mock<IFileProvider>().Setup(x => x.GetFiles(path))
-                   .Returns(files);
+        //        mock.Mock<IFileProvider>().Setup(x => x.GetFiles(path))
+        //           .Returns(files);
 
-                var cls = mock.Create<FileSystemService>();
+        //        var cls = mock.Create<FileSystemService>();
                 
-                var actual = cls.GetFiles(path, searchPattern);
+        //        var actual = cls.GetFiles(path, searchPattern);
 
-                Assert.True(actual != null);
+        //        Assert.True(actual != null);
 
-                Assert.Equal(files.Count(),actual.Count());
-            }
-        }
+        //        Assert.Equal(files.Count(),actual.Count());
+        //    }
+        //}
 
-        [Theory]
-        [MemberData(nameof(Data))]
-        public void GetDirectories_CheckedSearchPattern(string path, string searchPattern, SearchOption searchOption)
-        {
-            var files = new string[] { "C://aaa/a", "C://aaa/b", "C://aaa/c"};
+        //[Theory]
+        //[MemberData(nameof(Data))]
+        //public void GetDirectories_CheckedSearchPattern(string path, string searchPattern, SearchOption searchOption)
+        //{
+        //    var files = new string[] { "C://aaa/a", "C://aaa/b", "C://aaa/c"};
 
-            using (var mock = AutoMock.GetLoose())
-            {
-                mock.Mock<IFileProvider>().Setup(x => x.GetDirectories(path, searchPattern, searchOption))
-                    .Returns(files);
+        //    using (var mock = AutoMock.GetLoose())
+        //    {
+        //        mock.Mock<IFileProvider>().Setup(x => x.GetDirectories(path, searchPattern, searchOption))
+        //            .Returns(files);
 
-                mock.Mock<IFileProvider>().Setup(x => x.GetDirectories(path))
-                   .Returns(files);
+        //        mock.Mock<IFileProvider>().Setup(x => x.GetDirectories(path))
+        //           .Returns(files);
 
-                var cls = mock.Create<FileSystemService>();
+        //        var cls = mock.Create<FileSystemService>();
 
-                var actual = cls.GetDirectories(path, searchPattern, searchOption);
+        //        var actual = cls.GetDirectories(path, searchPattern, searchOption);
 
-                Assert.True(actual != null);
+        //        Assert.True(actual != null);
 
-                Assert.Equal(files.Count(), actual.Count());
-            }            
+        //        Assert.Equal(files.Count(), actual.Count());
+        //    }            
 
-        }
+        //}
         
     }
 }

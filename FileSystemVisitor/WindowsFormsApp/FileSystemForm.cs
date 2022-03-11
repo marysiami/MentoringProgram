@@ -7,7 +7,6 @@ namespace WindowsFormsApp
     public partial class FileSystemForm : Form
     {
         private IFileSystemService ReaderService { get; set; }
-        private int LastNodeIndex = 0;
 
         public FileSystemForm()
         {
@@ -104,11 +103,11 @@ namespace WindowsFormsApp
 
         private void TreeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            var node = e.Node;
-            if (node != null && e.Clicks > 1)
-            {
-                resultTree.Nodes.Remove(node);
-            }
+        //    var node = e.Node;
+        //    if (node != null && e.Clicks > 1)
+        //    {
+        //        resultTree.Nodes.Remove(node);
+        //    }
         }
 
         private void CheckBox1_CheckedChanged(object sender, EventArgs e)
@@ -116,13 +115,11 @@ namespace WindowsFormsApp
             if (addFiltersLabel.Checked == true)
             {
                 label2.Visible = true;
-                label3.Visible = true;
                 label4.Visible = true;
                 label5.Visible = true;
                 label6.Visible = true;
                 textBox2.Visible = true;
                 textBox3.Visible = true;
-                checkBox2.Visible = true;
                 FDirEx.Visible = true;
                 FDirStop.Visible = true;
                 FFilesEx.Visible = true;
@@ -131,13 +128,11 @@ namespace WindowsFormsApp
             else
             {
                 label2.Visible = false;
-                label3.Visible = false;
                 label4.Visible = false;
                 label5.Visible = false;
                 label6.Visible = false;
                 textBox2.Visible = false;
                 textBox3.Visible = false;
-                checkBox2.Visible = false; 
                 FDirEx.Visible = false;
                 FDirStop.Visible = false;
                 FFilesEx.Visible = false;
@@ -147,6 +142,8 @@ namespace WindowsFormsApp
 
         private void ButtonStart_Click(object sender, EventArgs e)
         {
+            resultTree.Nodes.Clear();
+
             resultTree.Enabled = true;
             noPathLabel.Visible = false;
 
@@ -159,42 +156,31 @@ namespace WindowsFormsApp
 
             FileSystemVisitor visitor;
 
+            visitor = new FileSystemVisitor(ReaderService, path, GetFilter);
+
+            var dirTree = visitor.GetDirectoryTree();
+
+            var mappedTreeRoot = dirTree.ToWindowsFormsTreeNode();
+
+            resultTree.Nodes.Add(mappedTreeRoot);
+        }
+
+        private Filter GetFilter()
+        {
             if (addFiltersLabel.Checked)
             {
-                Filter filter = new Filter(this.LastNodeIndex, 
-                    textBox2.Text, 
-                    checkBox2.Checked ? System.IO.SearchOption.TopDirectoryOnly : System.IO.SearchOption.AllDirectories,
-                    textBox3.Text);
-               
-
-               visitor = new FileSystemVisitor(ReaderService, path, filter);               
-            }
-            else
-            {
-               visitor = new FileSystemVisitor(ReaderService, path, new Filter (this.LastNodeIndex));               
+                return new Filter(
+                    textBox2.Text,
+                    textBox3.Text,
+                    FDirStop.Checked,
+                    FDirEx.Checked,
+                    FFileStop.Checked,
+                    FFilesEx.Checked
+                    );
             }
 
-            foreach(var dir in visitor.DirTree)
-            {
-                TreeNode node;
+            return null; 
 
-                if(dir.ParentID != null)
-                {
-                   // node = resultTree;
-                }
-                else
-                {
-                    node = resultTree.Nodes.Add(dir.Path);
-                }                
-
-                foreach(var file in dir.Files)
-                {
-                    //resultTree.Nodes[node.Index].Nodes.Add(file);
-                }
-
-            }
-
-            LastNodeIndex = visitor.LastNodeIndex;
         }
     }
 }

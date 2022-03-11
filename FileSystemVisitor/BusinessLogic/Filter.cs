@@ -5,21 +5,27 @@ namespace BusinessLogic
     public class Filter
     {
         public string DirSearchPattern { get; set; } = string.Empty;
-        public SearchOption DirSearchOption { get; set; }
+        public bool FilteredDirStop { get; set; } = false;
+        public bool FilteredDirEx { get; set; } = false;
         public string FileSearchPattern { get; set; } = string.Empty;
-        public int LastNodeIndex { get; set; }
+        public bool FilteredFileStop { get; set; } = false;
+        public bool FilteredFileEx { get; set; } = false;
 
-        public Filter(int lastNodeIndex)
-        {
-            LastNodeIndex = lastNodeIndex; 
-        }
+        public Filter() { }
 
-        public Filter(int lastNodeIndex, string dirSearchPattern, SearchOption dirSearchOption, string fileSearchPattern)
+        public Filter(string dirSearchPattern,
+            string fileSearchPattern,
+            bool filteredDirStop, 
+            bool filteredDirEx, 
+            bool filteredFileStop,
+            bool filteredFileEx)
         {
-            LastNodeIndex = lastNodeIndex;
             DirSearchPattern = dirSearchPattern;
-            DirSearchOption = dirSearchOption;
             FileSearchPattern = fileSearchPattern;
+            FilteredDirStop = filteredDirStop;
+            FilteredDirEx = filteredDirEx; 
+            FilteredFileStop = filteredFileStop;
+            FilteredFileEx = filteredFileEx;
         }
     }    
 }
