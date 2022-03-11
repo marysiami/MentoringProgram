@@ -225,7 +225,6 @@
             this.resultTree.Name = "resultTree";
             this.resultTree.Size = new System.Drawing.Size(747, 443);
             this.resultTree.TabIndex = 23;
-            this.resultTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TreeView_NodeMouseDoubleClick);
             // 
             // label8
             // 

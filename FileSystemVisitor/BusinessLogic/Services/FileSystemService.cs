@@ -15,10 +15,15 @@ namespace BusinessLogic
         public event EventHandler<string> DirectoryFoundEvent;
         public event EventHandler<string> FilteredDirectoryFoundEvent;
 
+        private const string LogFilePath = "ERROR_LOGS.txt";
+        private TextWriter LogWriter;
+
         private readonly IFileProvider _fileProvider;
+
         public FileSystemService(IFileProvider fileProvider)
         {
             _fileProvider = fileProvider;
+            LogWriter = new StreamWriter(LogFilePath, true);
         }
        
         public TreeNode GetTree(string path, Filter filter)
@@ -29,6 +34,7 @@ namespace BusinessLogic
 
             if (!_fileProvider.DirectoryExist(path))
             {
+                LogWriter.WriteLine($"{DateTime.Now.ToLongTimeString()} ArgumentException: {path}");
                 throw new ArgumentException();
             }
 
@@ -61,6 +67,8 @@ namespace BusinessLogic
             }
 
             FinishedEvent?.Invoke(this, path);
+
+            LogWriter.Close();
 
             return mainDir;
 
@@ -108,12 +116,12 @@ namespace BusinessLogic
                 }                              
             }
             catch (UnauthorizedAccessException e)
-            {// log to file
-                //Console.WriteLine(e.Message);
+            {
+                LogWriter.WriteLine($"{DateTime.Now.ToLongTimeString()} UnauthorizedAccessException: {e.Message}");
             }
             catch (DirectoryNotFoundException e)
-            {// log to file
-                //Console.WriteLine(e.Message);
+            {
+                LogWriter.WriteLine($"{DateTime.Now.ToLongTimeString()} DirectoryNotFoundException: {e.Message}");
             }
 
             return result;
@@ -163,13 +171,11 @@ namespace BusinessLogic
             }
             catch (UnauthorizedAccessException e)
             {
-                // log to file
-                //Console.WriteLine(e.Message);
+               LogWriter.WriteLine($"{DateTime.Now.ToLongTimeString()} UnauthorizedAccessException: {e.Message}");
             }
             catch (DirectoryNotFoundException e)
             {
-                // log to file
-                //Console.WriteLine(e.Message);
+               LogWriter.WriteLine($"{DateTime.Now.ToLongTimeString()} DirectoryNotFoundException: {e.Message}");
             }
 
             return result;
@@ -182,7 +188,10 @@ namespace BusinessLogic
                 foreach (string file in files)
                 {
                     if (string.IsNullOrEmpty(file))
+                    {
+                        LogWriter.WriteLine($"{DateTime.Now.ToLongTimeString()} FileNotFoundException: file name is null or empty");
                         throw new FileNotFoundException();
+                    }                        
 
                     FileInfo fi;
                     try
@@ -191,6 +200,7 @@ namespace BusinessLogic
                     }
                     catch (FileNotFoundException e)
                     {
+                        LogWriter.WriteLine($"{DateTime.Now.ToLongTimeString()} FileNotFoundException: {e.Message}");   
                         throw new FileNotFoundException(e.Message);
                     }
 

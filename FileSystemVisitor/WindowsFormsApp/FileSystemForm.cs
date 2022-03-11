@@ -1,5 +1,6 @@
 ﻿using BusinessLogic;
 using System;
+using System.IO;
 using System.Windows.Forms;
 
 namespace WindowsFormsApp
@@ -7,12 +8,15 @@ namespace WindowsFormsApp
     public partial class FileSystemForm : Form
     {
         private IFileSystemService ReaderService { get; set; }
+        private TextWriter LogWriter;
+        private const string LogFilePath = "LOGS.txt";
 
         public FileSystemForm()
         {
             InitializeComponent();
             ReaderService = (IFileSystemService)Program.ServiceProvider.GetService(typeof(IFileSystemService));
             RegisterEvents();
+            LogWriter = new StreamWriter( "LOGS.txt", true);
         }
         private void RegisterEvents()
         {
@@ -27,88 +31,34 @@ namespace WindowsFormsApp
         #region events
         private void ReaderService_FilteredDirectoryFoundEvent(object sender, string e)
         {
-            //if (FDirStop.Checked == true)
-            //{
-            //    resultTree.Enabled = false;
-            //}
-
-            //if (FDirEx.Checked == false)
-            //{
-            //    resultTree.Nodes.Add(e);
-            //}
-             
+            LogWriter.WriteLine($"{DateTime.Now.ToLongTimeString()} Filtered Directory Found: {e}");
         }
 
         private void ReaderService_FilteredFileFoundEvent(object sender, string e)
         {
-            //if (FFileStop.Checked == true)
-            //{
-            //    resultTree.Enabled = false;
-            //}
-
-            //if (FFilesEx.Checked == false)
-            //{
-            //    if (resultTree.Nodes.Count > 0 && resultTree.Nodes[e.DirectoryId] != null)
-            //    {
-            //        resultTree.Nodes[e.DirectoryId].Nodes.Add(e.FileName);
-            //    }
-            //}
-                     
+            LogWriter.WriteLine($"{DateTime.Now.ToLongTimeString()} Filtered File Found: {e}");
         }
 
         private void ReaderService_DirectoryFoundEvent(object sender, string e)
         {
-            //if (DirStop.Checked == true)
-            //{
-            //    resultTree.Enabled = false;
-            //}
-
-            //if (DirEx.Checked == false)
-            //{
-            //    resultTree.Nodes.Add(e);
-            //}
+            LogWriter.WriteLine($"{DateTime.Now.ToLongTimeString()} Directory Found: {e}");
         }
 
         private void ReaderService_FileFoundEvent(object sender, string e)
         {
-            //if (FileStop.Checked == true)
-            //{
-            //    resultTree.Enabled = false;
-            //}
-
-            //if (FilesEx.Checked == false)
-            //{
-            //    if (resultTree.Nodes.Count > 0 && resultTree.Nodes[e.DirectoryId] != null)
-            //    {
-            //        resultTree.Nodes[e.DirectoryId].Nodes.Add(e.FileName);
-            //    }
-            //}
-            
+            LogWriter.WriteLine($"{DateTime.Now.ToLongTimeString()} File Found: {e}");
         }
 
         private void Visitor_FinishedEvent(object sender, string e)
         {
-            //stopLabel.Text =$"Process finished for path: {e}";
-            //stopLabel.Visible = true;
-            //resultTree.EndUpdate();
+            LogWriter.WriteLine($"{DateTime.Now.ToLongTimeString()} Process finished for path: {e}");
         }
 
         private void Visitor_StartedEvent(object sender, string e)
         {
-            //startLabel.Text = $"Process started for path: {e}";
-            //startLabel.Visible = true;
-            //resultTree.BeginUpdate();
+            LogWriter.WriteLine($"{DateTime.Now.ToLongTimeString()} Process started for path: {e}");
         }
-        #endregion
-
-        private void TreeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
-        {
-        //    var node = e.Node;
-        //    if (node != null && e.Clicks > 1)
-        //    {
-        //        resultTree.Nodes.Remove(node);
-        //    }
-        }
+        #endregion       
 
         private void CheckBox1_CheckedChanged(object sender, EventArgs e)
         {
@@ -163,6 +113,8 @@ namespace WindowsFormsApp
             var mappedTreeRoot = dirTree.ToWindowsFormsTreeNode();
 
             resultTree.Nodes.Add(mappedTreeRoot);
+
+            LogWriter.Close();
         }
 
         private Filter GetFilter()
@@ -180,7 +132,6 @@ namespace WindowsFormsApp
             }
 
             return null; 
-
         }
     }
 }
