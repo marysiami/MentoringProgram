@@ -1,6 +1,7 @@
 ﻿using BusinessLogic;
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace WindowsFormsApp
@@ -16,7 +17,7 @@ namespace WindowsFormsApp
             InitializeComponent();
             ReaderService = (IFileSystemService)Program.ServiceProvider.GetService(typeof(IFileSystemService));
             RegisterEvents();
-            LogWriter = new StreamWriter( "LOGS.txt", true);
+            LogWriter = new StreamWriter("LOGS.txt", true);
         }
         private void RegisterEvents()
         {
@@ -26,7 +27,7 @@ namespace WindowsFormsApp
             ReaderService.DirectoryFoundEvent += ReaderService_DirectoryFoundEvent;
             ReaderService.FilteredFileFoundEvent += ReaderService_FilteredFileFoundEvent;
             ReaderService.FilteredDirectoryFoundEvent += ReaderService_FilteredDirectoryFoundEvent;
-        }        
+        }
 
         #region events
         private void ReaderService_FilteredDirectoryFoundEvent(object sender, string e)
@@ -93,7 +94,7 @@ namespace WindowsFormsApp
         private void ButtonStart_Click(object sender, EventArgs e)
         {
             resultTree.Nodes.Clear();
-
+            
             resultTree.Enabled = true;
             noPathLabel.Visible = false;
 
@@ -104,34 +105,39 @@ namespace WindowsFormsApp
                 return;
             }
 
-            FileSystemVisitor visitor;
+            var visitor = new FileSystemVisitor(ReaderService,IsDirValid, IsFileValid);
 
-            visitor = new FileSystemVisitor(ReaderService, path, GetFilter);
-
-            var dirTree = visitor.GetDirectoryTree();
-
-            var mappedTreeRoot = dirTree.ToWindowsFormsTreeNode();
-
-            resultTree.Nodes.Add(mappedTreeRoot);
-
-            LogWriter.Close();
-        }
-
-        private Filter GetFilter()
-        {
-            if (addFiltersLabel.Checked)
+            var resultList = visitor.GetAll(path);
+            foreach (var element in resultList)
             {
-                return new Filter(
-                    textBox2.Text,
-                    textBox3.Text,
-                    FDirStop.Checked,
-                    FDirEx.Checked,
-                    FFileStop.Checked,
-                    FFilesEx.Checked
-                    );
-            }
-
-            return null; 
+                resultTree.Nodes.Add(element);
+            }            
         }
-    }
+
+        public bool IsDirValid(string path)
+        {
+            if (string.IsNullOrEmpty(textBox2.Text))
+            {
+                return true;
+            }
+            else
+            {
+                Regex rx = new Regex(textBox2.Text);
+                return rx.IsMatch(path);               
+            }
+        }
+
+        public bool IsFileValid(string path)
+        {
+            if (string.IsNullOrEmpty(textBox3.Text))
+            {
+                return true;
+            }
+            else
+            {
+                Regex rx = new Regex(textBox3.Text);
+                return rx.IsMatch(path);
+            }
+        }
+    }    
 }

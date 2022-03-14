@@ -11,7 +11,7 @@ namespace BusinessLogic
         public event EventHandler<string> FilteredFileFoundEvent;
         public event EventHandler<string> DirectoryFoundEvent;
         public event EventHandler<string> FilteredDirectoryFoundEvent;
-
-        TreeNode GetTree(string path, Filter filter);
+                
+        IEnumerable<string> GetAll(string path, FileSystemVisitor.DirFilter dirFilterMethod, FileSystemVisitor.FileFilter fileFilterMethod);
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace BusinessLogic
 {
@@ -25,12 +24,11 @@ namespace BusinessLogic
             _fileProvider = fileProvider;
             LogWriter = new StreamWriter(LogFilePath, true);
         }
-       
-        public TreeNode GetTree(string path, Filter filter)
+        public IEnumerable<string> GetAll(string path, FileSystemVisitor.DirFilter dirFilterMethod, FileSystemVisitor.FileFilter fileFilterMethod)
         {
             StartedEvent?.Invoke(this, path);
-
-            var directoriesStack = new Stack<TreeNode>();
+            var result = new List<string>();
+            var directoriesStack = new Stack<string>();
 
             if (!_fileProvider.DirectoryExist(path))
             {
@@ -38,31 +36,27 @@ namespace BusinessLogic
                 throw new ArgumentException();
             }
 
-            var mainDir = new TreeNode { 
-                Path = path, 
-            };
-
-            directoriesStack.Push(mainDir);
+            directoriesStack.Push(path);
 
             while (directoriesStack.Count > 0)
             {
                 var currentDir = directoriesStack.Pop();
 
+                result.Add(currentDir);
+
                 List<string> subDirs, files;
 
-                subDirs = GetDirectories(currentDir.Path,filter);
-                files = GetFiles(currentDir.Path, filter);
-                           
+                subDirs = GetDirectories(currentDir, dirFilterMethod);
+                files = GetFiles(currentDir, fileFilterMethod);
+
                 foreach (var file in GetFilesInfo(files))
                 {
-                    currentDir.Nodes.Add(new TreeNode { Path = file.Name });
+                    result.Add(file.Name);
                 }
 
                 foreach (string str in subDirs)
                 {
-                    var child = new TreeNode { Path = str };
-                    currentDir.Nodes.Add(child);
-                    directoriesStack.Push(child);
+                    directoriesStack.Push(str);
                 }
             }
 
@@ -70,11 +64,10 @@ namespace BusinessLogic
 
             LogWriter.Close();
 
-            return mainDir;
-
+            return result;
         }
 
-        public List<string> GetDirectories(string path, Filter filter)
+        public List<string> GetDirectories(string path, FileSystemVisitor.DirFilter dirFilterMethod)
         {
             var result = new List<string>();
             try
@@ -83,37 +76,13 @@ namespace BusinessLogic
                 foreach (var dir in allDir)
                 {
                     DirectoryFoundEvent?.Invoke(this, dir);
-                }
 
-
-                if (filter == null || string.IsNullOrEmpty(filter?.DirSearchPattern))
-                {
-                    result = allDir;
-                }
-                else 
-                { 
-                    Regex rx = new Regex(filter.DirSearchPattern);
-
-                    foreach (var dir in allDir)
+                    if (dirFilterMethod(dir))
                     {
-                        if (rx.IsMatch(dir))
-                        {
-                            FilteredDirectoryFoundEvent?.Invoke(this, dir);
-
-                            if (filter.FilteredDirStop)
-                            {
-                                return result;
-                            }
-
-                            if (filter.FilteredDirStop)
-                            {
-                                continue;
-                            }
-
-                            result.Add(dir);                                                       
-                        }
-                    }                                   
-                }                              
+                        FilteredDirectoryFoundEvent?.Invoke(this, dir);
+                        result.Add(dir);
+                    }
+                }                  
             }
             catch (UnauthorizedAccessException e)
             {
@@ -127,7 +96,7 @@ namespace BusinessLogic
             return result;
         }
 
-        public List<string> GetFiles(string path, Filter filter)
+        public List<string> GetFiles(string path, FileSystemVisitor.FileFilter fileFilterMethod)
         {
             var result = new List<string>();
             try
@@ -136,37 +105,13 @@ namespace BusinessLogic
                 foreach (var file in allFiles)
                 {                    
                     FileFoundEvent?.Invoke(this, file);
-                }
 
-                if (filter == null || string.IsNullOrEmpty(filter?.FileSearchPattern))
-                {
-                    result = allFiles;
-                }
-                else
-                {
-                    Regex rx = new Regex(filter.FileSearchPattern);
-
-                    foreach (var file in allFiles)
+                    var fileName = Path.GetFileName(file);
+                    if (fileFilterMethod(fileName))
                     {
-                        var fileName = Path.GetFileName(file);
-
-                        if (rx.IsMatch(fileName))
-                        {
-                            FilteredFileFoundEvent?.Invoke(this, file);
-
-                            if (filter.FilteredFileStop)
-                            {
-                                return result;
-                            }
-
-                            if(filter.FilteredFileEx)
-                            {
-                                continue;
-                            }
-                           
-                            result.Add(file);    
-                        }
-                    }
+                        FilteredFileFoundEvent?.Invoke(this, file);                        
+                        result.Add(file);
+                    }               
                 }
             }
             catch (UnauthorizedAccessException e)

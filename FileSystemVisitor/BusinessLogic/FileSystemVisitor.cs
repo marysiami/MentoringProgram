@@ -4,22 +4,23 @@ namespace BusinessLogic
 {
     public class FileSystemVisitor
     {
-        public delegate Filter GetFilter();
-        private readonly IFileSystemService _fileSystemService;
+        public delegate bool DirFilter(string path);
+        public delegate bool FileFilter(string path);
 
-        private TreeNode DirTree { get; set; }
+        private readonly IFileSystemService _fileSystemService;             
+        private DirFilter DirFilterMethod { get; set; }
+        private FileFilter FileFilterMethod { get; set; }
 
-        public FileSystemVisitor(IFileSystemService fileSystemService, string path, GetFilter getFilter)
+        public FileSystemVisitor(IFileSystemService fileSystemService, DirFilter dirFilter, FileFilter fileFilter)
         {
             _fileSystemService = fileSystemService;
-
-            DirTree = _fileSystemService.GetTree(path, getFilter());
+            DirFilterMethod = dirFilter;
+            FileFilterMethod = fileFilter;
         }
 
-        public TreeNode GetDirectoryTree()
+        public IEnumerable<string> GetAll(string path)
         {
-            return DirTree;
+            return _fileSystemService.GetAll(path, DirFilterMethod, FileFilterMethod);          
         }
-
     }
 }
