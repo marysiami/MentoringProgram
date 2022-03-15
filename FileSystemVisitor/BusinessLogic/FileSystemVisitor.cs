@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 
 namespace BusinessLogic
 {
@@ -20,7 +21,34 @@ namespace BusinessLogic
 
         public IEnumerable<string> GetAll(string path)
         {
-            return _fileSystemService.GetAll(path, DirFilterMethod, FileFilterMethod);          
+            return _fileSystemService.GetAll(path);          
+        }
+        public IEnumerable<string> GetFilteredList(IEnumerable<string> list)
+        {
+            foreach (string el in list)
+            {
+                if (Directory.Exists(el))
+                {
+                    if (DirFilterMethod(el))
+                    {
+                        //FilteredDirectoryFoundEvent?.Invoke(this, dir);
+                       yield return el;
+                    }
+
+                }
+                else if (File.Exists(el))
+                {
+                    var fileName = Path.GetFileName(el);
+                    if (FileFilterMethod(fileName))
+                    {
+                        //FilteredFileFoundEvent?.Invoke(this, file);
+                        yield return fileName;
+                    }
+                }
+            }
+           
+
+
         }
     }
 }

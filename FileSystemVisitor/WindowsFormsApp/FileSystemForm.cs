@@ -107,7 +107,9 @@ namespace WindowsFormsApp
 
             var visitor = new FileSystemVisitor(ReaderService,IsDirValid, IsFileValid);
 
-            var resultList = visitor.GetAll(path);
+            var allItems = visitor.GetAll(path);
+            var resultList = visitor.GetFilteredList(allItems);
+
             foreach (var element in resultList)
             {
                 resultTree.Nodes.Add(element);

@@ -24,7 +24,7 @@ namespace BusinessLogic
             _fileProvider = fileProvider;
             LogWriter = new StreamWriter(LogFilePath, true);
         }
-        public IEnumerable<string> GetAll(string path, FileSystemVisitor.DirFilter dirFilterMethod, FileSystemVisitor.FileFilter fileFilterMethod)
+        public IEnumerable<string> GetAll(string path)
         {
             StartedEvent?.Invoke(this, path);
             var result = new List<string>();
@@ -46,8 +46,8 @@ namespace BusinessLogic
 
                 List<string> subDirs, files;
 
-                subDirs = GetDirectories(currentDir, dirFilterMethod);
-                files = GetFiles(currentDir, fileFilterMethod);
+                subDirs = GetDirectories(currentDir);
+                files = GetFiles(currentDir);
 
                 foreach (var file in GetFilesInfo(files))
                 {
@@ -67,7 +67,7 @@ namespace BusinessLogic
             return result;
         }
 
-        public List<string> GetDirectories(string path, FileSystemVisitor.DirFilter dirFilterMethod)
+        public List<string> GetDirectories(string path)
         {
             var result = new List<string>();
             try
@@ -76,12 +76,7 @@ namespace BusinessLogic
                 foreach (var dir in allDir)
                 {
                     DirectoryFoundEvent?.Invoke(this, dir);
-
-                    if (dirFilterMethod(dir))
-                    {
-                        FilteredDirectoryFoundEvent?.Invoke(this, dir);
-                        result.Add(dir);
-                    }
+                    result.Add(dir);    
                 }                  
             }
             catch (UnauthorizedAccessException e)
@@ -96,7 +91,7 @@ namespace BusinessLogic
             return result;
         }
 
-        public List<string> GetFiles(string path, FileSystemVisitor.FileFilter fileFilterMethod)
+        public List<string> GetFiles(string path)
         {
             var result = new List<string>();
             try
@@ -105,13 +100,8 @@ namespace BusinessLogic
                 foreach (var file in allFiles)
                 {                    
                     FileFoundEvent?.Invoke(this, file);
-
-                    var fileName = Path.GetFileName(file);
-                    if (fileFilterMethod(fileName))
-                    {
-                        FilteredFileFoundEvent?.Invoke(this, file);                        
-                        result.Add(file);
-                    }               
+                    result.Add(file);
+       
                 }
             }
             catch (UnauthorizedAccessException e)
