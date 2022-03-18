@@ -15,5 +15,9 @@ namespace BusinessLogic
         {
             return Directory.GetFiles(path);
         }
+        public bool FileExists(string path)
+        {
+            return File.Exists(path);
+        }
     }
 }

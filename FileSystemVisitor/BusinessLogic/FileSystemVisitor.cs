@@ -63,56 +63,61 @@ namespace BusinessLogic
                 {
                     var fileName = Path.GetFileName(file);
                     FileFoundEvent?.Invoke(this, fileName);
-                    result.Add(fileName);
+                    result.Add(file);
                 }
             }
 
-            bool run = true;
-
             foreach (string el in result)
             {
-                if (!run)
-                    yield break;
+                var fileName = Path.GetFileName(el);
 
-                if (Directory.Exists(el))
+                if (_fileProvider.DirectoryExist(el))
                 {
-                    if (DirFilterMethod == null)
+                    if (DirFilterMethod != null)
+                    {
+                        if (DirFilterMethod(fileName))
+                        {
+                            FilteredDirectoryFoundEvent?.Invoke(this, el);
+
+                            if (Flag == null || !Flag.FilteredDirEx)
+                            {
+                                yield return el;
+                            }
+
+                            if (Flag != null && Flag.FilteredDirStop)
+                            {
+                                yield break;
+                            }
+                        }
+                    }
+                    else
+                    {
                         yield return el;
-                    
-                    if (DirFilterMethod(el))
-                    {
-                        FilteredDirectoryFoundEvent?.Invoke(this, el);
-
-                        if (Flag == null)
-                            yield return el;
-                           
-                        if (!Flag.FilteredDirEx)
-                            yield return el;
-
-                        if (Flag.FilteredDirStop)
-                            run = false;
-                    }
+                    }   
                 }
-                else if (File.Exists(el))
+                else if (_fileProvider.FileExists(el))
                 {
-                    var fileName = Path.GetFileName(el);
-
-                    if (FileFilterMethod == null)
-                        yield return fileName;
-
-                    if (FileFilterMethod(fileName))
+                    if (FileFilterMethod != null)
                     {
-                        FilteredFileFoundEvent?.Invoke(this, fileName);
+                        if (FileFilterMethod(fileName))
+                        {
+                            FilteredFileFoundEvent?.Invoke(this, fileName);
 
-                        if (Flag == null)
-                            yield return fileName;
-                        
-                        if (!Flag.FilteredFileEx)
-                            yield return fileName;
+                            if (Flag == null || !Flag.FilteredFileEx)
+                            {
+                                yield return el;
+                            }
 
-                        if (Flag.FilteredFileStop)
-                            run = false;
+                            if (Flag != null && Flag.FilteredFileStop)
+                            {
+                                yield break;
+                            }          
+                        }
                     }
+                    else
+                    {
+                        yield return el;
+                    }  
                 }
             }            
 
