@@ -12,7 +12,6 @@ namespace WindowsFormsApp
         static void ConfigureServices()
         {
             var services = new ServiceCollection();
-            services.AddTransient<IFileSystemService, FileSystemService>();
             services.AddSingleton<IFileProvider, PhysicalFileProvider>();
             ServiceProvider = services.BuildServiceProvider();
         }

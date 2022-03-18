@@ -8,25 +8,25 @@ namespace WindowsFormsApp
 {
     public partial class FileSystemForm : Form
     {
-        private IFileSystemService ReaderService { get; set; }
+        private IFileProvider Provider { get; set; }
         private TextWriter LogWriter;
         private const string LogFilePath = "LOGS.txt";
+        private FileSystemVisitor Visitor { get; set; }
 
         public FileSystemForm()
         {
             InitializeComponent();
-            ReaderService = (IFileSystemService)Program.ServiceProvider.GetService(typeof(IFileSystemService));
-            RegisterEvents();
+            Provider = (IFileProvider)Program.ServiceProvider.GetService(typeof(IFileProvider));           
             LogWriter = new StreamWriter("LOGS.txt", true);
         }
         private void RegisterEvents()
         {
-            ReaderService.StartedEvent += Visitor_StartedEvent;
-            ReaderService.FinishedEvent += Visitor_FinishedEvent;
-            ReaderService.FileFoundEvent += ReaderService_FileFoundEvent;
-            ReaderService.DirectoryFoundEvent += ReaderService_DirectoryFoundEvent;
-            ReaderService.FilteredFileFoundEvent += ReaderService_FilteredFileFoundEvent;
-            ReaderService.FilteredDirectoryFoundEvent += ReaderService_FilteredDirectoryFoundEvent;
+            Visitor.StartedEvent += Visitor_StartedEvent;
+            Visitor.FinishedEvent += Visitor_FinishedEvent;
+            Visitor.FileFoundEvent += ReaderService_FileFoundEvent;
+            Visitor.DirectoryFoundEvent += ReaderService_DirectoryFoundEvent;
+            Visitor.FilteredFileFoundEvent += ReaderService_FilteredFileFoundEvent;
+            Visitor.FilteredDirectoryFoundEvent += ReaderService_FilteredDirectoryFoundEvent;
         }
 
         #region events
@@ -104,11 +104,12 @@ namespace WindowsFormsApp
                 noPathLabel.Visible = true;
                 return;
             }
+         
+            Visitor = new FileSystemVisitor(Provider,new Flag(FDirStop.Checked,FDirEx.Checked,FFileStop.Checked,FFilesEx.Checked), IsDirValid, IsFileValid);
 
-            var visitor = new FileSystemVisitor(ReaderService,IsDirValid, IsFileValid);
+            RegisterEvents();
 
-            var allItems = visitor.GetAll(path);
-            var resultList = visitor.GetFilteredList(allItems);
+            var resultList = Visitor.GetAllFilesAndDirs(path);
 
             foreach (var element in resultList)
             {

@@ -2,26 +2,21 @@
 
 namespace BusinessLogic
 {
-    public class Filter
+    public class Flag
     {
-        public string DirSearchPattern { get; set; } = string.Empty;
         public bool FilteredDirStop { get; set; } = false;
         public bool FilteredDirEx { get; set; } = false;
-        public string FileSearchPattern { get; set; } = string.Empty;
         public bool FilteredFileStop { get; set; } = false;
         public bool FilteredFileEx { get; set; } = false;
 
-        public Filter() { }
+        public Flag() { }
 
-        public Filter(string dirSearchPattern,
-            string fileSearchPattern,
+        public Flag(
             bool filteredDirStop, 
             bool filteredDirEx, 
             bool filteredFileStop,
             bool filteredFileEx)
         {
-            DirSearchPattern = dirSearchPattern;
-            FileSearchPattern = fileSearchPattern;
             FilteredDirStop = filteredDirStop;
             FilteredDirEx = filteredDirEx; 
             FilteredFileStop = filteredFileStop;
