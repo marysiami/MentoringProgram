@@ -47,9 +47,9 @@ namespace Providers
                 string result = appSettings[key] ?? "Not Found";
                 return result;
             }
-            catch (ConfigurationErrorsException)
+            catch (ConfigurationErrorsException err)
             {
-                throw new ConfigurationErrorsException("Error reading app settings");
+                throw new ConfigurationErrorsException("Error reading app settings", err);
             }
         }
 

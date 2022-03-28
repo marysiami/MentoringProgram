@@ -21,9 +21,9 @@ namespace Providers
                 configFile.Save(ConfigurationSaveMode.Modified);
                 ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
             }
-            catch (ConfigurationErrorsException)
+            catch (ConfigurationErrorsException err)
             {
-                throw new ConfigurationErrorsException("Error writing app settings");                
+                throw new ConfigurationErrorsException("Error writing app settings", err);                
             }
         }
 
@@ -36,9 +36,9 @@ namespace Providers
                 string result = settings[key].Value ?? "Not Found";
                 return result;
             }
-            catch (ConfigurationErrorsException)
+            catch (ConfigurationErrorsException err)
             {
-                throw new ConfigurationErrorsException("Error reading app settings");
+                throw new ConfigurationErrorsException("Error reading app settings", err);
             }
         }
     }
