@@ -35,7 +35,7 @@ namespace Providers
             }
             catch (ConfigurationErrorsException err)
             {
-               throw new ConfigurationErrorsException("CreateConfigurationFile: {0}", err);
+               throw new ConfigurationErrorsException("Error writing app settings", err);
             }
         }
 

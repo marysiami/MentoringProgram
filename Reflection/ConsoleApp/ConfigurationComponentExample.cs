@@ -30,6 +30,19 @@ namespace ConsoleApp
             }
         }
 
+        [ConfigurationItem("settingsNameFloat", ProviderTypeEnum.File)]
+        public float TestSettingFloat
+        {
+            get
+            {
+                return GetValue<float>();
+            }
+            set
+            {
+                SetValue(value);
+            }
+        }
+
         [ConfigurationItem("settingsNameDateTime", ProviderTypeEnum.File)]
         public DateTime TestSettingDateTime
         {

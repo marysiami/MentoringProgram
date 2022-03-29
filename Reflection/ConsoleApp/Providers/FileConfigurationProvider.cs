@@ -2,9 +2,11 @@
 
 namespace Providers
 {
-    public static class FileConfigurationProvider
+    public class FileConfigurationProvider
     {
-        public static void SaveSettings<T>(string key, T value)
+        public FileConfigurationProvider() { }
+
+        public void SaveSettings<T>(string key, T value)
         {
             try
             {
@@ -27,7 +29,7 @@ namespace Providers
             }
         }
 
-        public static string LoadSettings(string key)
+        public string LoadSettings(string key)
         {
             try
             {

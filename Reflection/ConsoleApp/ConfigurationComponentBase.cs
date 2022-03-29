@@ -7,6 +7,13 @@ namespace ConsoleApp
 {
     public abstract class ConfigurationComponentBase
     {
+        private ConfigurationManagerConfigurationProvider CMProvider;
+        private FileConfigurationProvider FileProvider;
+        public ConfigurationComponentBase()
+        {
+            CMProvider = new ConfigurationManagerConfigurationProvider();
+            FileProvider= new FileConfigurationProvider();
+        }
         protected T GetValue<T>()
         {
             try
@@ -27,12 +34,11 @@ namespace ConsoleApp
                 string result;
                 if (confItemAttribute.ProviderType == ProviderTypeEnum.File)
                 {
-                    result = FileConfigurationProvider.LoadSettings(confItemAttribute.SettingName);
+                    result = FileProvider.LoadSettings(confItemAttribute.SettingName);
                 }
                 else
                 {
-                    var provider = new ConfigurationManagerConfigurationProvider();
-                    result = provider.LoadSettings(confItemAttribute.SettingName);
+                    result = CMProvider.LoadSettings(confItemAttribute.SettingName);
                 }
 
                 return (T)Convert.ChangeType(result, typeof(T));
@@ -65,12 +71,11 @@ namespace ConsoleApp
 
                 if (confItemAttribute.ProviderType == ProviderTypeEnum.File)
                 {
-                    FileConfigurationProvider.SaveSettings(confItemAttribute.SettingName, value);
+                    FileProvider.SaveSettings(confItemAttribute.SettingName, value);
                 }
                 else
                 {
-                    var provider = new ConfigurationManagerConfigurationProvider();
-                    provider.SaveSettings(confItemAttribute.SettingName, value);
+                    CMProvider.SaveSettings(confItemAttribute.SettingName, value);
                 }
             }
             catch (Exception e)
