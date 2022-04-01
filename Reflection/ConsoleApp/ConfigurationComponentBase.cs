@@ -1,5 +1,5 @@
 ﻿using Attributes;
-using Providers;
+using PluginBase;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -7,12 +7,12 @@ namespace ConsoleApp
 {
     public abstract class ConfigurationComponentBase
     {
-        private ConfigurationManagerConfigurationProvider CMProvider;
-        private FileConfigurationProvider FileProvider;
-        public ConfigurationComponentBase()
+        private ICommandProvider CMProvider;
+        private ICommandProvider FileProvider;
+        public ConfigurationComponentBase(ICommandProvider managerConfigurationProvider, ICommandProvider fileProvider )
         {
-            CMProvider = new ConfigurationManagerConfigurationProvider();
-            FileProvider= new FileConfigurationProvider();
+            CMProvider = managerConfigurationProvider;
+            FileProvider= fileProvider;
         }
         protected T GetValue<T>()
         {

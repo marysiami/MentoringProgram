@@ -1,9 +1,14 @@
 ﻿using Attributes;
+using PluginBase;
 
 namespace ConsoleApp
 {
     public class ConfigurationComponentExample: ConfigurationComponentBase
     {
+        public ConfigurationComponentExample(ICommandProvider managerConfigurationProvider, ICommandProvider fileProvider) : base(managerConfigurationProvider, fileProvider)
+        {
+        }
+
         [ConfigurationItem("settingsNameInt", ProviderTypeEnum.File)]
         public int TestSettingInt
         {

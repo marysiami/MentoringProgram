@@ -1,8 +1,9 @@
-﻿using System.Configuration;
+﻿using PluginBase;
+using System.Configuration;
 
 namespace Providers
 {
-    public class ConfigurationManagerConfigurationProvider
+    public class ConfigurationManagerConfigurationProvider : ICommandProvider
     {
         private Configuration Config { get; set; }
         private CustomSection Section { get; set; }  
@@ -11,8 +12,11 @@ namespace Providers
         {
             Section = new CustomSection();
 
-            Config = ConfigurationManager.OpenExeConfiguration(
-                    ConfigurationUserLevel.None);
+            ExeConfigurationFileMap fileMap = new();
+
+            fileMap.ExeConfigFilename = "../Reflection/CMProviderPlugin/myconfig.config";
+
+            Config = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None);
 
             if (Config.Sections["CustomSection"] == null)
             {
@@ -53,7 +57,7 @@ namespace Providers
             }
         }
 
-        public sealed class CustomSection : ConfigurationSection
+        public class CustomSection : ConfigurationSection
         {
         }
     }

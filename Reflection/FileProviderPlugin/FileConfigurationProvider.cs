@@ -1,11 +1,10 @@
-﻿using System.Configuration;
+﻿using PluginBase;
+using System.Configuration;
 
 namespace Providers
 {
-    public class FileConfigurationProvider
+    public class FileConfigurationProvider : ICommandProvider
     {
-        public FileConfigurationProvider() { }
-
         public void SaveSettings<T>(string key, T value)
         {
             try
@@ -43,5 +42,6 @@ namespace Providers
                 throw new ConfigurationErrorsException("Error reading app settings", err);
             }
         }
+
     }
 }
