@@ -1,4 +1,4 @@
-﻿using BusinessLogic.FileSystemVisitor;
+﻿using BusinessLogic;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Windows.Forms;
@@ -12,7 +12,7 @@ namespace WindowsFormsApp
         static void ConfigureServices()
         {
             var services = new ServiceCollection();
-            services.AddTransient<IFileSystemService, FileSystemService>();
+            services.AddSingleton<IFileProvider, PhysicalFileProvider>();
             ServiceProvider = services.BuildServiceProvider();
         }
 

@@ -13,11 +13,11 @@ namespace WindowsFormsApp
             InitializeComponent();
         }
      
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void TextBox1_TextChanged(object sender, EventArgs e)
         {
             UserName = textBox1.Text;
         }
-        private void buttonHelloWorld_Click(object sender, EventArgs e)
+        private void ButtonHelloWorld_Click(object sender, EventArgs e)
         {
             lblHelloWorld.Text = Greeting.Welcome(UserName);            
         }

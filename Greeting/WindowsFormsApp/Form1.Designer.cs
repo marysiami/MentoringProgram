@@ -44,7 +44,7 @@
             this.buttonHelloWorld.TabIndex = 0;
             this.buttonHelloWorld.Text = "Submit";
             this.buttonHelloWorld.UseVisualStyleBackColor = true;
-            this.buttonHelloWorld.Click += new System.EventHandler(this.buttonHelloWorld_Click);
+            this.buttonHelloWorld.Click += new System.EventHandler(this.ButtonHelloWorld_Click);
             // 
             // lblHelloWorld
             // 
@@ -69,7 +69,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(316, 20);
             this.textBox1.TabIndex = 3;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.textBox1.TextChanged += new System.EventHandler(this.TextBox1_TextChanged);
             // 
             // Form1
             // 
