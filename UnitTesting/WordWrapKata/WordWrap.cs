@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace WordWrapKata
 {
@@ -17,21 +18,23 @@ namespace WordWrapKata
             }
             else
             {
-                int lastSpace = 0;
-                int space;
-                while ((space = term.IndexOf(" ", lastSpace)) != -1)
+                var sb = new StringBuilder();
+                var strings = term.Split(' ');
+                int column = 0;
+                foreach (var s in strings)
                 {
-                    if (space > length)
+                    column += s.Length;
+                    if(column < length)
                     {
-                        term = term.Substring(0, lastSpace) + "\n" + term.Substring(lastSpace + 1);                       
+                        sb.Append(s + ' ');
                     }
-                    lastSpace = space;
+                    else
+                    {
+                        sb.Append(s + '\n');
+                    }                    
                 }
+                return sb.ToString();
             }
-
-            return term;
-
-            //return word.Replace(" ", "\n");
         }
     }
 }
