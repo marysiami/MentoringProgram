@@ -51,7 +51,7 @@ namespace CalculatorKata.Test
         }
 
         [Fact]
-        public void Add_GetWrongString_ReturnException()
+        public void Add_GetWrongString_ReturnZero()
         {
             // Arrange
             var word = "aaa,77";
@@ -62,5 +62,46 @@ namespace CalculatorKata.Test
             // Assert
             result.Should().Be(0);
         }
+
+        [Fact]
+        public void Add_GetLongString_ReturnSum()
+        {
+            // Arrange
+            var word = "100,-5,77,23,10,-100,-5";
+
+            // Act
+            var result = Calculator.Add(word);
+
+            // Assert
+            result.Should().Be(100);
+        }
+
+        [Fact]
+        public void Add_GetStringWithCommasAndNewLine_ReturnSum()
+        {
+            // Arrange
+            var word = "100,-5\n77,,23,10\n-100,-5\n,,,";
+
+            // Act
+            var result = Calculator.Add(word);
+
+            // Assert
+            result.Should().Be(100);
+        }
+
+        [Fact]
+        public void Add_GetStringWithDelimiter_ReturnSum()
+        {
+            // Arrange
+            var word = ";\n1;2";
+
+            // Act
+            var result = Calculator.Add(word);
+
+            // Assert
+            result.Should().Be(3);
+        }
+
+
     }
 }

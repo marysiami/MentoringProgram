@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CalculatorKata
 {
@@ -15,12 +14,30 @@ namespace CalculatorKata
                 return 0;
             }
 
-            var list = numbers.Split(',');
+            var delimiter = numbers[0];
+
+            if (!Int32.TryParse(delimiter.ToString(), out int d) && numbers[1] == '\n')
+            {
+               numbers = numbers.Substring(2);
+            }
+            else
+            {
+                delimiter = ',';
+            }
+
+            numbers = numbers.Replace('\n', delimiter);
+
+            var list = numbers.Split(delimiter);
 
             var intList = new List<int>();
 
             foreach(var item in list)
             {
+                if (string.IsNullOrEmpty(item))
+                {
+                    continue;
+                }
+
                 if (Int32.TryParse(item, out int i))
                 {
                     intList.Add(i);
