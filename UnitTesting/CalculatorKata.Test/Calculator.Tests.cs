@@ -1,9 +1,5 @@
 ﻿using FluentAssertions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace CalculatorKata.Test
@@ -67,30 +63,30 @@ namespace CalculatorKata.Test
         public void Add_GetLongString_ReturnSum()
         {
             // Arrange
-            var word = "100,-5,77,23,10,-100,-5";
+            var word = "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1";
 
             // Act
             var result = Calculator.Add(word);
 
             // Assert
-            result.Should().Be(100);
+            result.Should().Be(22);
         }
 
         [Fact]
         public void Add_GetStringWithCommasAndNewLine_ReturnSum()
         {
             // Arrange
-            var word = "100,-5\n77,,23,10\n-100,-5\n,,,";
+            var word = ".\n1.2.3\n...";
 
             // Act
             var result = Calculator.Add(word);
 
             // Assert
-            result.Should().Be(100);
+            result.Should().Be(6);
         }
 
         [Fact]
-        public void Add_GetStringWithDelimiter_ReturnSum()
+        public void Add_GetStringWithDelimter_ReturnSum()
         {
             // Arrange
             var word = ";\n1;2";
@@ -102,6 +98,17 @@ namespace CalculatorKata.Test
             result.Should().Be(3);
         }
 
+        [Fact]
+        public void Add_GetStringWithNegativeNumber_ThrowException()
+        {
+            // Arrange
+            var word = "1,2,-2,-1,5";
 
+            // Act
+            Action act = () => Calculator.Add(word);
+
+            // Assert
+            act.Should().Throw<Exception>();
+        }
     }
 }

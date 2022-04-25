@@ -16,7 +16,7 @@ namespace CalculatorKata
 
             var delimiter = numbers[0];
 
-            if (!Int32.TryParse(delimiter.ToString(), out int d) && numbers[1] == '\n')
+            if (!int.TryParse(delimiter.ToString(), out int d) && numbers[1] == '\n')
             {
                numbers = numbers.Substring(2);
             }
@@ -29,6 +29,18 @@ namespace CalculatorKata
 
             var list = numbers.Split(delimiter);
 
+            var negativeInt = list.Select(x=>x.Contains("-")).ToList();
+            if(negativeInt.Count > 0)
+            {
+                var sb = new StringBuilder();
+                foreach(var item in negativeInt)
+                {
+                    sb.Append(item + " ");
+                }
+               
+                throw new Exception("negatives not allowed" + sb.ToString());
+            }
+
             var intList = new List<int>();
 
             foreach(var item in list)
@@ -38,7 +50,7 @@ namespace CalculatorKata
                     continue;
                 }
 
-                if (Int32.TryParse(item, out int i))
+                if (int.TryParse(item, out int i))
                 {
                     intList.Add(i);
                 }
