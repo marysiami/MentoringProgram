@@ -1,5 +1,6 @@
 ﻿using System;
 using FluentAssertions;
+using Tasks.DoNotChange;
 using Xunit;
 
 namespace Tasks.Tests
