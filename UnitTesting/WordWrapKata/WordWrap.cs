@@ -3,38 +3,52 @@ using System.Text;
 
 namespace WordWrapKata
 {
-    public static class WordWrap
+    public class WordWrap
     {
-        public static string Wrap(string term, int length)
+        public int Column { get; set; }
+        public WordWrap(int column)
+        {
+            this.Column = column;
+        }
+
+        public static string Wrap(string term, int column)
+        {
+            return new WordWrap(column).Wrap(term);
+        }
+
+        private string Wrap(string term)
         {
             if (string.IsNullOrEmpty(term))
             {
-                throw new ArgumentException(term);
+                throw new ArgumentNullException(term);
             }
 
-            if (term.Length <= length)
-            {
-                return term;                  
+            if(term.Length <= Column)
+            {                
+                return term;
             }
             else
             {
-                var sb = new StringBuilder();
-                var strings = term.Split(' ');
-                int column = 0;
-                foreach (var s in strings)
+                int space = (term.Substring(0, Column).LastIndexOf(' '));
+                if (space != -1)
                 {
-                    column += s.Length;
-                    if(column < length)
-                    {
-                        sb.Append(s + ' ');
-                    }
-                    else
-                    {
-                        sb.Append(s + '\n');
-                    }                    
+                    return BreakLine(term, space, 1);
                 }
-                return sb.ToString();
-            }
+                else if (term[Column] == ' ')
+                {
+                    return BreakLine(term, Column, 1);
+                }
+                else
+                {
+                    return BreakLine(term, Column, 0);
+                }
+            }            
+        }
+       
+
+        private string BreakLine(string s, int pos, int gap)
+        {
+            return s.Substring(0, pos) + "\n" + Wrap(s.Substring(pos + gap), Column);
         }
     }
 }

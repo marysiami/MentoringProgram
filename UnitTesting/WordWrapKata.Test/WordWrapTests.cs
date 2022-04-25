@@ -20,43 +20,55 @@ namespace WordWrapKata.Test
         }
 
         [Fact]
-        public void Wrap_GetLeghtShorterThanCol_ReturnsError()
+        public void Wrap_GetLeghtShorterThanCol_ReturnsTheSameTerm()
         {
             // Arrange
             var word = "this";
 
             // Act
-            Action act = () => WordWrap.Wrap(word, 10);
+            var act = WordWrap.Wrap(word, 10);
 
             // Assert
-            act.Should().Throw<Exception>();
+            act.Should().Be(word);
         }
 
         [Fact]
-        public void Wrap_GetTwoWordsWithSpace_ReturnsWrongString()
+        public void Wrap_GetOneWordAndSplit_ReturnsGoodString()
+        {
+            // Arrange
+            var word = "word";
+
+            // Act
+            var result = WordWrap.Wrap(word, 2);
+
+            // Assert
+            result.Should().Be("wo\nrd");
+        }
+
+        [Fact]
+        public void Wrap_GetOneWordAndSplitManyTimes_ReturnsGoodString()
+        {
+            // Arrange
+            var word = "abcdefghijk";
+
+            // Act
+            var result = WordWrap.Wrap(word, 3);
+
+            // Assert
+            result.Should().Be("abc\ndef\nghi\njk");
+        }
+
+        [Fact]
+        public void Wrap_ReplaceSpace_ReturnsGoodString()
         {
             // Arrange
             var word = "word word";
 
             // Act
-            var result =  WordWrap.Wrap(word, 6);
+            var result = WordWrap.Wrap(word, 5);
 
             // Assert
-            result.Should().NotBe("word\nword");
-        }
-
-        [Fact]
-        public void Wrap_GetThreeWordsWithSpace_ReturnsWrongString()
-        {
-            // Arrange
-            var word = "word word word";
-
-            // Act
-            var result = WordWrap.Wrap(word, 11);
-
-            // Assert
-            result.Should().NotBe("word\nword\nword");
-            result.Should().Be("word word\nword");
+            result.Should().Be("word\nword");
         }
     }
 }
