@@ -29,7 +29,7 @@ namespace CalculatorKata
 
             var list = numbers.Split(delimiter);
 
-            var negativeInt = list.Select(x=>x.Contains("-")).ToList();
+            var negativeInt = list.Where(x=>x.Contains("-")).ToList();
             if(negativeInt.Count > 0)
             {
                 var sb = new StringBuilder();
