@@ -61,6 +61,8 @@
     <Folder Include="PublishLocation" />
     <Folder Include="PostPublishScripts" />
     <Folder Include="dbo\Views" />
+    <Folder Include="dbo\StoredProcedure" />
+    <Folder Include="dbo\Trigger" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Address.sql" />
@@ -68,6 +70,8 @@
     <Build Include="dbo\Tables\Employee.sql" />
     <Build Include="dbo\Tables\Company.sql" />
     <Build Include="dbo\Views\EmployeeInfo.sql" />
+    <Build Include="dbo\StoredProcedure\sp_InsertEmployee.sql" />
+    <Build Include="dbo\Trigger\trigger_InsertCompany.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PublishLocation\SQLPRoject.publish.xml" />
