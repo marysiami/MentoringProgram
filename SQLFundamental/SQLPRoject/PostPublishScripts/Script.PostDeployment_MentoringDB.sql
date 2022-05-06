@@ -45,7 +45,7 @@ SELECT @employeeId = Id FROM dbo.Employee where AddressId = @addressId AND Perso
 if (@employeeId IS NULL)
 BEGIN
     INSERT INTO dbo.Employee(Id, AddressId, PersonId, CompanyName, Position, EmployeeName)
-    VALUES (1, @addressId, @personId, 'DemoDemo','line worker', 'developer');
+    VALUES (1, @addressId, @personId, 'DemoDemo','line worker', 'Demo User');
 
 END
 
