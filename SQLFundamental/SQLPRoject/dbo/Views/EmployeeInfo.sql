@@ -10,5 +10,6 @@
 	FROM Employee e
 	LEFT JOIN dbo.Person p on e.PersonId = p.Id
 	LEFT JOIN dbo.Address a on e.AddressId = a.Id
-	
+	LEFT JOIN dbo.Company c on c.AddressId = a.Id
+	ORDER BY c.Name, a.City OFFSET 0 ROWS;
 
