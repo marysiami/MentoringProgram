@@ -10,15 +10,9 @@
 	@ZipCode nvarchar(50)
 AS
 	IF(
-		( @LastName IS NULL AND 
-		@FirstName IS NULL AND 
-		@EmployeeName IS NULL ) OR
-		( @LastName = '' AND 
-		@FirstName = '' AND 
-		@EmployeeName = '' ) OR
-		( @LastName = ' ' AND 
-		@FirstName = ' ' AND 
-		@EmployeeName = ' ' )
+		TRIM(@LastName) IS NULL AND 
+		TRIM(@FirstName) IS NULL AND 
+		TRIM(@EmployeeName) IS NULL 
 	) 
 	RETURN 0
 
