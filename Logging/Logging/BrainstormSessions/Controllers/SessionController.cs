@@ -19,9 +19,11 @@ namespace BrainstormSessions.Controllers
 
         public async Task<IActionResult> Index(int? id)
         {
+            _logger.LogInformation("Session View");
+
             if (!id.HasValue)
             {
-                _logger.LogInformation($"No ID value: {id}");
+                _logger.LogWarning($"No ID value: {id}");
 
                 return RedirectToAction(actionName: nameof(Index),
                     controllerName: "Home");

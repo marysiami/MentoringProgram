@@ -23,7 +23,7 @@ namespace BrainstormSessions.Controllers
 
         public async Task<IActionResult> Index()
         {
-            _logger.LogDebug("Home View - test log");
+            _logger.LogInformation("Home View");
 
             var sessionList = await _sessionRepository.ListAsync();
 
@@ -55,8 +55,8 @@ namespace BrainstormSessions.Controllers
             else
             {
                 try
-                {
-                     await _sessionRepository.AddAsync(new BrainstormSession()
+                { 
+                    await _sessionRepository.AddAsync(new BrainstormSession()
                      {
                         DateCreated = DateTimeOffset.Now,
                         Name = model.SessionName
@@ -67,7 +67,8 @@ namespace BrainstormSessions.Controllers
                     _logger.LogError("An error has occurred during sessionRepository.AddAsync()", ex);
                     return NotFound();
                 }
-               
+
+                _logger.LogInformation("HOME - new model added");
             }
 
             return RedirectToAction(actionName: nameof(Index));

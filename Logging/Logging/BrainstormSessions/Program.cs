@@ -1,6 +1,10 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.EmailPickup;
+using System;
+using System.IO;
 
 namespace BrainstormSessions
 {
@@ -8,12 +12,22 @@ namespace BrainstormSessions
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            //https://github.com/gkinsman/Serilog.Sinks.EmailPickup
+            var currentDir = Environment.CurrentDirectory;
+            var logDir = Path.Combine(currentDir ,"SmtpPickupDirAppenderTest_PickupDir");
 
             Log.Logger = new LoggerConfiguration()
-             .MinimumLevel.Debug()
-             .WriteTo.Console()
-             .CreateLogger();
+                            .WriteTo.Console()
+                            .WriteTo.EmailPickup(
+                                fromEmail: "app@example.com",
+                                toEmail: "support@example.com",
+                                pickupDirectory: logDir,
+                                subject: "LOGS from application",
+                                fileExtension: ".email",
+                                restrictedToMinimumLevel: LogEventLevel.Information)
+                            .CreateLogger();
+            
+            CreateHostBuilder(args).Build().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

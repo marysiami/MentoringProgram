@@ -25,6 +25,8 @@ namespace BrainstormSessions.Api
         [HttpGet("forsession/{sessionId}")]
         public async Task<IActionResult> ForSession(int sessionId)
         {
+            _logger.LogInformation("forsession endpoint");
+
             var session = await _sessionRepository.GetByIdAsync(sessionId);
             if (session == null)
             {
@@ -46,7 +48,7 @@ namespace BrainstormSessions.Api
 
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody]NewIdeaModel model)
-        {
+        {  
             if (!ModelState.IsValid)
             {
                 _logger.LogWarning("Model not valid");
@@ -69,6 +71,8 @@ namespace BrainstormSessions.Api
                 Name = model.Name
             };
             session.AddIdea(idea);
+
+            _logger.LogInformation("NewIdeaModel created");
 
             try
             {
@@ -139,6 +143,8 @@ namespace BrainstormSessions.Api
                 Name = model.Name
             };
             session.AddIdea(idea);
+
+            _logger.LogInformation("NewIdeaModel created");
 
             try
             {
