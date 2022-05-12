@@ -18,11 +18,17 @@ namespace BrainstormSessions.Test.UnitTests
     public class LoggingTests : IDisposable
     {
         private readonly MemoryAppender _appender;
+        private Mock<ILogger<HomeController>> _homeLogger;
+        private Mock<ILogger<IdeasController>> _ideasLogger;
+        private Mock<ILogger<SessionController>> _sessionLogger;
 
         public LoggingTests()
         {
             _appender = new MemoryAppender();
             BasicConfigurator.Configure(_appender);
+            _homeLogger = new Mock<ILogger<HomeController>>();  
+            _ideasLogger = new Mock<ILogger<IdeasController>>();
+            _sessionLogger = new Mock<ILogger<SessionController>>();
         }
 
         public void Dispose()
@@ -37,7 +43,7 @@ namespace BrainstormSessions.Test.UnitTests
             var mockRepo = new Mock<IBrainstormSessionRepository>();
             mockRepo.Setup(repo => repo.ListAsync())
                 .ReturnsAsync(GetTestSessions());
-            var controller = new HomeController(mockRepo.Object);
+            var controller = new HomeController(mockRepo.Object, _homeLogger.Object);
 
             // Act
             var result = await controller.Index();
@@ -54,7 +60,7 @@ namespace BrainstormSessions.Test.UnitTests
             var mockRepo = new Mock<IBrainstormSessionRepository>();
             mockRepo.Setup(repo => repo.ListAsync())
                 .ReturnsAsync(GetTestSessions());
-            var controller = new HomeController(mockRepo.Object);
+            var controller = new HomeController(mockRepo.Object, _homeLogger.Object);
             controller.ModelState.AddModelError("SessionName", "Required");
             var newSession = new HomeController.NewSessionModel();
 
@@ -71,7 +77,7 @@ namespace BrainstormSessions.Test.UnitTests
         {
             // Arrange & Act
             var mockRepo = new Mock<IBrainstormSessionRepository>();
-            var controller = new IdeasController(mockRepo.Object);
+            var controller = new IdeasController(mockRepo.Object, _ideasLogger.Object);
             controller.ModelState.AddModelError("error", "some error");
 
             // Act
@@ -91,7 +97,7 @@ namespace BrainstormSessions.Test.UnitTests
             mockRepo.Setup(repo => repo.GetByIdAsync(testSessionId))
                 .ReturnsAsync(GetTestSessions().FirstOrDefault(
                     s => s.Id == testSessionId));
-            var controller = new SessionController(mockRepo.Object);
+            var controller = new SessionController(mockRepo.Object, _sessionLogger.Object);
 
             // Act
             var result = await controller.Index(testSessionId);
