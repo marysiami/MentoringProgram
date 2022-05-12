@@ -1,0 +1,21 @@
+To: support@example.com
+From: app@example.com
+Subject: LOGS from application
+Date: Thu, 12 May 2022 16:02:52 GMT
+
+-----------
+
+Level: Information
+START APP
+Home View
+HOME - new model added
+Home View
+forsession endpoint
+NewIdeaModel created
+NewIdeaModel created
+Home View
+
+Properties:
+
+No exception was logged
+
