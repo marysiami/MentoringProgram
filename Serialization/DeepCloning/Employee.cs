@@ -1,5 +1,6 @@
-﻿namespace CustomSerialization
+﻿namespace DeepCloning
 {
+    [Serializable]
     public class Employee
     {
         public string EmployeeName { get; set; }
