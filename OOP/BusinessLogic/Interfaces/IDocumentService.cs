@@ -1,10 +1,15 @@
 ﻿namespace BusinessLogic.Interfaces
 {
-    public interface IDocumentService
+    public interface IDocumentService<T>: IDocumentService where T: IDocument
     {
-        string[] GetDocumentsNames(string number);
-        T GetDocument<T>(string path) where T : IDocument;
-        string GetDocumentType(string path);
+        List<Card> GetCards(string number);
+        Task<T> GetDocument(string number);
+        string GetDocumentType(string number);
+        string SerializeDocumentInfo(T document);
 
+    }
+    public interface IDocumentService 
+    { 
+        bool CanHandleDocument(string type);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using BusinessLogic.Interfaces;
 
-namespace BusinessLogic.Models
+namespace BusinessLogic
 {
     [Serializable]
     public class Patent : IDocument
@@ -11,6 +11,6 @@ namespace BusinessLogic.Models
         public string? Title { get; set; }
         public DateTime PublishedDate { get; set; }
         public DateTime ExpirationDate { get; set; }
-
+        public bool IsCacheEnabled { get; set; } = true;
     }
 }

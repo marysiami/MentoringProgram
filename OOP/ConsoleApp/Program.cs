@@ -1,8 +1,9 @@
-﻿using BusinessLogic.Interfaces;
-using BusinessLogic.Models;
-using ConsoleApp;
+﻿using BusinessLogic;
+using BusinessLogic.Handlers;
+using BusinessLogic.Interfaces;
+using BusinessLogic.Services;
 using FileSystem.Repositories;
-using FileSystem.Services;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,9 +11,8 @@ using Newtonsoft.Json;
 
 var host = CreateHostBuilder(args).Build();
 
-//PrepareData();
-
-Logic(host);
+while (true)
+    Logic(host);
 
 static IHostBuilder CreateHostBuilder(string[] args)
 {
@@ -23,10 +23,20 @@ static IHostBuilder CreateHostBuilder(string[] args)
         })
         .ConfigureServices((context, services) =>
         {
+            services.AddSingleton<IMemoryCache, MemoryCache>();
+            services.AddSingleton<IDocumentService<Book>, DocumentService<Book>>();
+            services.AddSingleton<IDocumentService<LocalizedBook>, DocumentService<LocalizedBook>>();
+            services.AddSingleton<IDocumentService<Patent>, DocumentService<Patent>>();
+            services.AddSingleton<IDocumentService<Magazine>, DocumentService<Magazine>>();
+            services.AddSingleton<IDocumentService<IDocument>, DocumentService<IDocument>>();
+            services.AddSingleton<DocumentService<Book>, BookService>();
+            services.AddSingleton<DocumentService<LocalizedBook>, LocalizedBookService>();
+            services.AddSingleton<DocumentService<Patent>, PatentService>();
+            services.AddSingleton<DocumentService<Magazine>, MagazineService>();
+            services.AddSingleton<DocumentService<IDocument>, GenericDocumentService>();
+            services.AddSingleton<BusinessLogic.Interfaces.IServiceProvider, BusinessLogic.Providers.ServiceProvider>();
             services.AddSingleton<IDocumentRepository, FileRepository>();
-            services.AddSingleton<IDocumentService, DocumentService>();
             services.AddSingleton<IRequestHandler, RequestHandler>();
-
         });
 
     return hostBuilder;
@@ -45,14 +55,14 @@ static void Logic(IHost host)
         return;
     }
 
-    var list = handler.GetDocuments(number);
+    var list = handler.GetCards(number);
 
     Console.Write($"---- Found {list.Length} documents ----  \n");
     if (list.Length > 0)
     {
         for (int i = 0; i < list.Length; i++)
         {
-            Console.WriteLine($"[{i}] - {Path.GetFileName(list[i])} \n");
+            Console.WriteLine($"[{i}] - {list[i].Type} - {list[i].Number} \n");
         }
 
         Console.WriteLine("---- Choose document ID ----  \n");
@@ -63,77 +73,16 @@ static void Logic(IHost host)
         }
 
         var idNumber = int.Parse(id);
-        var path = list[idNumber];
-        var document = handler.GetDocumentInfo(path);
+        var card = list[idNumber];
+        var document = handler.GetDocumentInfo(card).Result;
 
         Console.WriteLine("---- Document CARD details ----  \n");
         Console.WriteLine(document);
     }
 
+    Console.ReadKey();
     Console.WriteLine();
     Console.WriteLine("---- End ----");
+    Console.WriteLine();
 }
 
-
-void PrepareData()
-{
-    var book = new Book()
-    {
-        ISBN = "1234ABC",
-        Number = 32154,
-        Authors = new List<Author>() { new Author() { Name = "Jan", Surname = "Kowalski" } },
-        NumberOfPages = 100,
-        PublishedDate = DateTime.Now,
-        Publisher = "AAA",
-        Title = "Title1"
-    };
-    var localizedBook = new LocalizedBook()
-    {
-        ISBN = "AA1234ABC",
-        Number = 1432,
-        Authors = new List<Author>() { new Author() { Name = "Jan", Surname = "Kowalski" } },
-        NumberOfPages = 120,
-        PublishedDate = DateTime.Now,
-        Publisher = "ABBB",
-        Title = "Title2"
-    };
-    var patent = new Patent()
-    {
-        Authors = new List<Author>() { new Author() { Name = "Jan", Surname = "Kowalski" }, new Author() { Name = "Anna", Surname = "Nowak" } },
-        Id = Guid.NewGuid(),
-        ExpirationDate = DateTime.Now.AddDays(1),
-        Number = 1432,
-        PublishedDate = DateTime.Now,
-        Title = "ABC"
-    };
-
-    var mag = new Magazine()
-    {
-        Number = 1432,
-        Publisher = "ABBB",
-        Title = "Title2",
-        PublishDate = DateTime.UtcNow,
-        ReleaseNumber = "234das"
-    };
-
-
-    var dir = Directory.GetCurrentDirectory();
-
-    var bookR = JsonConvert.SerializeObject(book);
-    string fileName = $"{dir}/data/{book.GetType().Name}_#{book.Number}.json";
-    File.WriteAllText(fileName, bookR);
-
-    var localizedBookR = JsonConvert.SerializeObject(localizedBook);
-    fileName = $"{dir}/data/{localizedBook.GetType().Name}_#{localizedBook.Number}.json";
-    File.WriteAllText(fileName, localizedBookR);
-
-    var patentR = JsonConvert.SerializeObject(patent);
-    fileName = $"{dir}/data/{patent.GetType().Name}_#{patent.Number}.json";
-    File.WriteAllText(fileName, patentR);
-
-    var magR = JsonConvert.SerializeObject(mag);
-    fileName = $"{dir}/data/{mag.GetType().Name}_#{mag.Number}.json";
-    File.WriteAllText(fileName, magR);
-
-}
-    

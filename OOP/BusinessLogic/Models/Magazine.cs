@@ -1,6 +1,6 @@
 ﻿using BusinessLogic.Interfaces;
 
-namespace BusinessLogic.Models
+namespace BusinessLogic
 {
     public class Magazine : IDocument
     {
@@ -9,5 +9,7 @@ namespace BusinessLogic.Models
         public string? Publisher { get; set; }
         public string? ReleaseNumber { get; set; }
         public DateTime PublishDate { get; set; }
+        public bool IsCacheEnabled { get; set; } = false;
+        public DateTime ExpirationDate { get; set; }
     }
 }

@@ -2,8 +2,8 @@
 {
     public interface IRequestHandler
     {
-        string[] GetDocuments(string number);
+        Card[] GetCards(string number);
 
-        string GetDocumentInfo(string path);
+        Task<string> GetDocumentInfo(Card card);
     }
 }

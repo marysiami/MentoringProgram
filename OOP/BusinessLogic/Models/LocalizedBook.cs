@@ -1,4 +1,4 @@
-﻿namespace BusinessLogic.Models
+﻿namespace BusinessLogic
 {
     [Serializable]
     public class LocalizedBook : Book
