@@ -52,10 +52,8 @@ static void Logic(IHost host)
     {
         for (int i = 0; i < list.Length; i++)
         {
-            Console.WriteLine($"[{i}] - {list[i]} \n");
+            Console.WriteLine($"[{i}] - {Path.GetFileName(list[i])} \n");
         }
-
-
 
         Console.WriteLine("---- Choose document ID ----  \n");
         var id = Console.ReadLine();
@@ -109,8 +107,19 @@ void PrepareData()
         Title = "ABC"
     };
 
-    var bookR = JsonConvert.SerializeObject(book);
+    var mag = new Magazine()
+    {
+        Number = 1432,
+        Publisher = "ABBB",
+        Title = "Title2",
+        PublishDate = DateTime.UtcNow,
+        ReleaseNumber = "234das"
+    };
+
+
     var dir = Directory.GetCurrentDirectory();
+
+    var bookR = JsonConvert.SerializeObject(book);
     string fileName = $"{dir}/data/{book.GetType().Name}_#{book.Number}.json";
     File.WriteAllText(fileName, bookR);
 
@@ -121,6 +130,10 @@ void PrepareData()
     var patentR = JsonConvert.SerializeObject(patent);
     fileName = $"{dir}/data/{patent.GetType().Name}_#{patent.Number}.json";
     File.WriteAllText(fileName, patentR);
+
+    var magR = JsonConvert.SerializeObject(mag);
+    fileName = $"{dir}/data/{mag.GetType().Name}_#{mag.Number}.json";
+    File.WriteAllText(fileName, magR);
 
 }
     

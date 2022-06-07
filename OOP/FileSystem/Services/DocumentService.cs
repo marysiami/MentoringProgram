@@ -32,8 +32,9 @@ namespace FileSystem.Services
             return _documentRepository.GetDocumentsDirectories(number);
         }
 
-        public string GetDocumentType(string name)
+        public string GetDocumentType(string path)
         {
+            var name = Path.GetFileName(path);
             return name.Split("_")[0];
         }
 

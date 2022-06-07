@@ -19,8 +19,7 @@ namespace ConsoleApp
                 return Array.Empty<string>();
             }
 
-            var list = _documentService.GetDocumentsNames(number).ToList().Select(x=> Path.GetFileName(x));
-            return list.ToArray();
+            return _documentService.GetDocumentsNames(number);           
         }
 
         public string GetDocumentInfo(string name)
@@ -52,6 +51,14 @@ namespace ConsoleApp
                         $" Authors:{string.Join(" and ", patent.Authors.Select(x => $"{x.Name} {x.Surname}"))}\n" +
                         $" ExpirationDate: {patent.ExpirationDate}\n" +
                         $" PublishedDate: {patent.PublishedDate}\n";
+
+                case "Magazine":
+                    var magazine = _documentService.GetDocument<Magazine>(name);
+                    return $" Number: {magazine.Number}\n" +
+                        $" Title: {magazine.Title}\n" +
+                        $" PublishDate: {magazine.PublishDate}\n" +
+                        $" ReleaseNumber: {magazine.ReleaseNumber}\n" +
+                        $" Publisher: {magazine.Publisher}\n";
                 default:
                     return String.Empty;
             };         

@@ -4,7 +4,7 @@
     {
         string[] GetDocumentsNames(string number);
         T GetDocument<T>(string path) where T : IDocument;
-        string GetDocumentType(string name);
+        string GetDocumentType(string path);
 
     }
 }
