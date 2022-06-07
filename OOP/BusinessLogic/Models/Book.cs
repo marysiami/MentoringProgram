@@ -2,6 +2,7 @@
 
 namespace BusinessLogic.Models
 {
+    [Serializable]
     public class Book : IDocument
     {
         public string? ISBN { get; set; }    

@@ -2,6 +2,7 @@
 
 namespace BusinessLogic.Models
 {
+    [Serializable]
     public class Patent : IDocument
     {
         public int Number { get; set; }

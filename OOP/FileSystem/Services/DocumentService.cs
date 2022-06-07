@@ -1,7 +1,8 @@
 ﻿using BusinessLogic.Interfaces;
+using BusinessLogic.Models;
 using Newtonsoft.Json;
 
-namespace BusinessLogic.Services
+namespace FileSystem.Services
 {
     public class DocumentService : IDocumentService
     {
@@ -15,8 +16,8 @@ namespace BusinessLogic.Services
         {
             using StreamReader r = new StreamReader(path);
             string json = r.ReadToEnd();
-            var result = JsonConvert.DeserializeObject<T>(json);  
-            if(result != null)
+            var result = JsonConvert.DeserializeObject<T>(json);
+            if (result != null)
             {
                 return result;
             }
@@ -28,12 +29,14 @@ namespace BusinessLogic.Services
 
         public string[] GetDocumentsNames(string number)
         {
-           return _documentRepository.GetDocumentsDirectories(number);
+            return _documentRepository.GetDocumentsDirectories(number);
         }
 
         public string GetDocumentType(string name)
         {
             return name.Split("_")[0];
         }
+
+
     }
 }

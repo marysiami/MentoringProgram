@@ -19,7 +19,8 @@ namespace ConsoleApp
                 return Array.Empty<string>();
             }
 
-            return _documentService.GetDocumentsNames(number);
+            var list = _documentService.GetDocumentsNames(number).ToList().Select(x=> Path.GetFileName(x));
+            return list.ToArray();
         }
 
         public string GetDocumentInfo(string name)
@@ -30,16 +31,30 @@ namespace ConsoleApp
             {
                 case "Book":
                     var book = _documentService.GetDocument<Book>(name);
-                    return $"Number: {book.Number}\n ISBN: {book.ISBN}\n Publisher: {book.Publisher}";
+                    return $" Number: {book.Number}\n" +
+                        $" Title: {book.Title}\n" +
+                        $" Authors:{string.Join(" and ", book.Authors.Select(x => $"{x.Name} {x.Surname}"))}\n" +
+                        $" ISBN: {book.ISBN}\n " +
+                        $" Publisher: {book.Publisher}\n ";
+                       
                 case "LocalizedBook":
                     var localizedBook = _documentService.GetDocument<LocalizedBook>(name);
-                    return $"Number: {localizedBook.Number} ISBN: {localizedBook.ISBN}\n Publisher: {localizedBook.Publisher}";
+                    return $" Number: {localizedBook.Number}\n" +
+                        $" Title: {localizedBook.Title}\n" +
+                        $" Authors:{string.Join(" and ", localizedBook.Authors.Select(x => $"{x.Name} {x.Surname}"))}\n" +
+                        $" ISBN: {localizedBook.ISBN}\n" +
+                        $" Publisher: {localizedBook.Publisher}\n";
+
                 case "Patent":
                     var patent = _documentService.GetDocument<Patent>(name);
-                    return $"Number: {patent.Number} ExpirationDate: {patent.ExpirationDate}\n PublishedDate: {patent.PublishedDate}";
+                    return $" Number: {patent.Number}\n" +
+                        $" Title: {patent.Title}\n" +
+                        $" Authors:{string.Join(" and ", patent.Authors.Select(x => $"{x.Name} {x.Surname}"))}\n" +
+                        $" ExpirationDate: {patent.ExpirationDate}\n" +
+                        $" PublishedDate: {patent.PublishedDate}\n";
                 default:
                     return String.Empty;
-            };          
+            };         
                 
         }
     }

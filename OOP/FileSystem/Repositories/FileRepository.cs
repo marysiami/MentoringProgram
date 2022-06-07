@@ -1,14 +1,14 @@
 ﻿using BusinessLogic.Interfaces;
 using Newtonsoft.Json;
 
-namespace BusinessLogic.Repositories
+namespace FileSystem.Repositories
 {
     public class FileRepository : IDocumentRepository
     { 
         private string directory { get; set; }
         public FileRepository()
         {
-            directory = "";
+            directory = $"{Directory.GetCurrentDirectory()}/data";
         }
 
         public async Task<T> GetDocument<T>(string name) where T : IDocument
@@ -28,7 +28,7 @@ namespace BusinessLogic.Repositories
 
         public string[] GetDocumentsDirectories(string name)
         {
-            return Directory.GetFiles(directory, $"*{name}");
+            return Directory.GetFiles(directory, $"*{name}*");
         }
     }
 }
