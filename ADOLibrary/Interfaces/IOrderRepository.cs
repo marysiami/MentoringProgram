@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ADOLibrary.Models;
+using System.Data;
 
 namespace ADOLibrary.Interfaces
 {
     public interface IOrderRepository
     {
-        public void Insert();
-        public void Update();
-        public void Get();
-        public void GetAll();
-        public void Delete();
-        public void DeleteAll();
+        public Task Insert(Order product);
+        public Task Update(Order product);
+        public DataSet Get(int id);
+        public DataTable GetAll(string status, DateTime createdDateFrom, DateTime createdDateTo, int productId);
+        public Task Delete(int id);
+        public Task Delete(string status, DateTime createdDateFrom, DateTime createdDateTo, int productId);
     }
 }

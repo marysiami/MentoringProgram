@@ -2,6 +2,7 @@
 using ADOLibrary.Models;
 
 #region product
+
 var productRepository = new ProductRepository();
 
 //var productList = productRepository.GetAll();
@@ -29,5 +30,31 @@ var productRepository = new ProductRepository();
 
 #region order
 var orderRepository = new OrderRepository();
+
+var newOrder = new Order()
+{
+    CreatedDate = DateTime.Now,
+    UpdatedDate = DateTime.Now,
+    ProductId = 3,
+    Status = "OK"
+};
+
+//await orderRepository.Insert(newOrder);
+//await orderRepository.Insert(newOrder);
+//await orderRepository.Insert(newOrder);
+
+//newOrder.CreatedDate = DateTime.Now.AddDays(-100);
+//newOrder.Status = "Error";
+//newOrder.Id = 1;
+
+//await orderRepository.Update(newOrder);
+
+//var orderDataSet = orderRepository.Get(1);
+//Console.WriteLine(orderDataSet.Tables.Count);
+
+//var orderDataEmpty = orderRepository.GetAll("OK", DateTime.Now.AddDays(-100), DateTime.Now, 1);
+//var orderDataFull = orderRepository.GetAll("OK", DateTime.Now.AddDays(-100), DateTime.Now, 3);
+
+await orderRepository.Delete("OK", DateTime.Now.AddDays(-100), DateTime.Now, 3);
 
 #endregion

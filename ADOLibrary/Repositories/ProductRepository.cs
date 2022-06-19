@@ -1,12 +1,13 @@
 ﻿using ADOLibrary.Interfaces;
 using ADOLibrary.Models;
 using System.Data.SqlClient;
+using System.Data;
 
 namespace ADOLibrary.Repositories
 {
     public class ProductRepository : IProductRepository
     {
-        private string connectionString =
+        private readonly string connectionString =
             @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ADO_ORM_mentoring;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         
         public async Task Delete(int id)
@@ -48,10 +49,8 @@ namespace ADOLibrary.Repositories
             }
         }
 
-        public Product Get(int id)
+        public DataSet Get(int id)
         {
-            var result = new Product();
-
             using SqlConnection connection = new(connectionString);
 
             var queryString = "SELECT * FROM dbo.Product WHERE Id = @Id";
@@ -62,21 +61,10 @@ namespace ADOLibrary.Repositories
             try
             {
                 connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    result = new Product()
-                    {
-                        Id = (int)reader["Id"],
-                        Name = (string)reader["Name"],
-                        Description = (string)reader["Description"],
-                        Weight = (int)reader["Weight"],
-                        Length = (int)reader["Length"],
-                        Width = (int)reader["Width"]
-                    };
-                }
-                reader.Close();
-                return result;
+                SqlDataAdapter sda = new(command);
+                DataSet dsData = new();
+                sda.Fill(dsData);
+                return dsData;
             }
             catch (Exception ex)
             {

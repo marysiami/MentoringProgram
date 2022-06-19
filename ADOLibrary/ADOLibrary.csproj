@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+    <PackageReference Include="Z.BulkOperations" Version="3.0.57" />
   </ItemGroup>
 
 </Project>
