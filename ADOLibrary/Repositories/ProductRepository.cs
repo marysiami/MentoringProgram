@@ -2,20 +2,24 @@
 using ADOLibrary.Models;
 using System.Data.SqlClient;
 using System.Data;
+using System.Data.Common;
 
 namespace ADOLibrary.Repositories
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly string connectionString =
-            @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ADO_ORM_mentoring;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private string connectionString { get; set; }
+        public ProductRepository(DbConfig dbConfig)
+        {
+            connectionString = dbConfig.ConnectionString;
+        }
         
         public async Task Delete(int id)
         {
             using SqlConnection connection = new(connectionString);
             connection.Open();
 
-            var queryString = "DELETE FROM dbo.Product WHERE Id = @Id";
+            var queryString = "DELETE FROM [dbo].[Product] WHERE Id = @Id";
             var command = new SqlCommand(queryString, connection);
             command.Parameters.AddWithValue("@Id", id);
 
@@ -35,7 +39,7 @@ namespace ADOLibrary.Repositories
             using SqlConnection connection = new(connectionString);
             connection.Open();
 
-            var queryString = "DELETE FROM dbo.Product";
+            var queryString = "DELETE FROM [dbo].[Product]";
             var command = new SqlCommand(queryString, connection);
 
             try
@@ -43,9 +47,9 @@ namespace ADOLibrary.Repositories
                 await command.ExecuteNonQueryAsync();
                 connection.Close();
             }
-            catch (Exception ex)
+            catch (DbException ex)
             {
-                throw new Exception(command.CommandText, ex);
+                throw ex;
             }
         }
 
@@ -53,7 +57,7 @@ namespace ADOLibrary.Repositories
         {
             using SqlConnection connection = new(connectionString);
 
-            var queryString = "SELECT * FROM dbo.Product WHERE Id = @Id";
+            var queryString = "SELECT * FROM [dbo].[Product] WHERE Id = @Id";
 
             var command = new SqlCommand(queryString, connection);
             command.Parameters.AddWithValue("@Id", id);                     
@@ -61,9 +65,12 @@ namespace ADOLibrary.Repositories
             try
             {
                 connection.Open();
-                SqlDataAdapter sda = new(command);
+                using SqlDataAdapter sda = new(command);
                 DataSet dsData = new();
                 sda.Fill(dsData);
+
+                connection.Close();
+                    
                 return dsData;
             }
             catch (Exception ex)
@@ -131,10 +138,10 @@ namespace ADOLibrary.Repositories
                 await command.ExecuteNonQueryAsync();
                 connection.Close();
             }
-            catch(Exception ex)
+            catch(DbException ex)
             {
-                throw new Exception(command.CommandText, ex);
-            }
+                throw ex;
+            }            
         }
 
         public async Task Update(Product product)
@@ -165,9 +172,9 @@ namespace ADOLibrary.Repositories
                 await command.ExecuteNonQueryAsync();
                 connection.Close();
             }
-            catch (Exception ex)
+            catch (DbException ex)
             {
-                throw new Exception(command.CommandText, ex);
+                throw ex;
             }
         }
     }

@@ -3,10 +3,10 @@ using ADOLibrary.Models;
 
 #region product
 
-var productRepository = new ProductRepository();
+//var productRepository = new ProductRepository();
 
 //var productList = productRepository.GetAll();
-//var product = productRepository.Get(1);
+//var product = productRepository.Get(3);
 
 //var newProduct = new Product()
 //{
@@ -29,15 +29,15 @@ var productRepository = new ProductRepository();
 #endregion
 
 #region order
-var orderRepository = new OrderRepository();
+//var orderRepository = new OrderRepository();
 
-var newOrder = new Order()
-{
-    CreatedDate = DateTime.Now,
-    UpdatedDate = DateTime.Now,
-    ProductId = 3,
-    Status = "OK"
-};
+//var newOrder = new Order()
+//{
+//    CreatedDate = DateTime.Now,
+//    UpdatedDate = DateTime.Now,
+//    ProductId = 3,
+//    Status = "OK"
+//};
 
 //await orderRepository.Insert(newOrder);
 //await orderRepository.Insert(newOrder);
@@ -55,6 +55,6 @@ var newOrder = new Order()
 //var orderDataEmpty = orderRepository.GetAll("OK", DateTime.Now.AddDays(-100), DateTime.Now, 1);
 //var orderDataFull = orderRepository.GetAll("OK", DateTime.Now.AddDays(-100), DateTime.Now, 3);
 
-await orderRepository.Delete("OK", DateTime.Now.AddDays(-100), DateTime.Now, 3);
+//await orderRepository.Delete("OK", DateTime.Now.AddDays(-100), DateTime.Now, 3);
 
 #endregion
