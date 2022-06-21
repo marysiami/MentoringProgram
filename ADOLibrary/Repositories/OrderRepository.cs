@@ -8,12 +8,14 @@ namespace ADOLibrary.Repositories
 {
     public class OrderRepository : IOrderRepository
     {
-        private readonly string connectionString =
-            @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ADO_ORM_mentoring;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-
+        private string ConnectionString { get; set; }
+        public OrderRepository(DbConfig dbConfig)
+        {
+            ConnectionString = dbConfig.ConnectionString;
+        }
         public async Task Delete(int id)
         {
-            using SqlConnection connection = new(connectionString);
+            using SqlConnection connection = new(ConnectionString);
             connection.Open();
 
             var queryString = "DELETE FROM [dbo].[Order] WHERE Id = @Id";
@@ -38,7 +40,7 @@ namespace ADOLibrary.Repositories
         {
             var dt = GetAll(status, createdDateFrom, createdDateTo, productId);
 
-            using SqlConnection connection = new(connectionString);
+            using SqlConnection connection = new(ConnectionString);
             connection.Open();  
 
             try
@@ -61,7 +63,7 @@ namespace ADOLibrary.Repositories
         {
             var result = new Order();
 
-            using SqlConnection connection = new(connectionString);
+            using SqlConnection connection = new(ConnectionString);
 
             var queryString = "SELECT * FROM [dbo].[Order] WHERE Id = @Id";
 
@@ -89,7 +91,7 @@ namespace ADOLibrary.Repositories
         {
             string procedure = "GetOrdersProcedure";
 
-            using SqlConnection connection = new(connectionString);
+            using SqlConnection connection = new(ConnectionString);
 
             var command = new SqlCommand(procedure, connection)
             {
@@ -124,7 +126,7 @@ namespace ADOLibrary.Repositories
 
         public async Task Insert(Order Order)
         {
-            using SqlConnection connection = new(connectionString);
+            using SqlConnection connection = new(ConnectionString);
             connection.Open();
 
             var command = connection.CreateCommand();
@@ -153,7 +155,7 @@ namespace ADOLibrary.Repositories
 
         public async Task Update(Order Order)
         {
-            using SqlConnection connection = new(connectionString);
+            using SqlConnection connection = new(ConnectionString);
             connection.Open();
 
             var command = connection.CreateCommand();

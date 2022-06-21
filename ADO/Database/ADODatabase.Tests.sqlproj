@@ -65,7 +65,7 @@
   <ItemGroup>
     <Build Include="dbo\tables\Order.sql" />
     <Build Include="dbo\tables\Product.sql" />
-    <PostDeploy Include="PostPublishScripts\Script.PostDeployment_ADOTestDB.sql" />
+    <Build Include="dbo\stored_procedure\sp.GetOrdersProcedure.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PublishLocation\ADODatabase.Tests.publish.xml" />

@@ -2,6 +2,6 @@
 AS
 BEGIN
     SELECT *
-    FROM [ADO_ORM_mentoring].[dbo].[Order]
+    FROM [dbo].[Order]
 	WHERE Status = @Status AND CreatedDate > @CreatedDateFrom AND CreatedDate <= @CreatedDateTo AND ProductId = @ProductId 
 END

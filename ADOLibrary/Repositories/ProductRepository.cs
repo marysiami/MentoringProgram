@@ -8,15 +8,15 @@ namespace ADOLibrary.Repositories
 {
     public class ProductRepository : IProductRepository
     {
-        private string connectionString { get; set; }
+        private string ConnectionString { get; set; }
         public ProductRepository(DbConfig dbConfig)
         {
-            connectionString = dbConfig.ConnectionString;
+            ConnectionString = dbConfig.ConnectionString;
         }
         
         public async Task Delete(int id)
         {
-            using SqlConnection connection = new(connectionString);
+            using SqlConnection connection = new(ConnectionString);
             connection.Open();
 
             var queryString = "DELETE FROM [dbo].[Product] WHERE Id = @Id";
@@ -36,7 +36,7 @@ namespace ADOLibrary.Repositories
 
         public async Task DeleteAll()
         {
-            using SqlConnection connection = new(connectionString);
+            using SqlConnection connection = new(ConnectionString);
             connection.Open();
 
             var queryString = "DELETE FROM [dbo].[Product]";
@@ -55,7 +55,7 @@ namespace ADOLibrary.Repositories
 
         public DataSet Get(int id)
         {
-            using SqlConnection connection = new(connectionString);
+            using SqlConnection connection = new(ConnectionString);
 
             var queryString = "SELECT * FROM [dbo].[Product] WHERE Id = @Id";
 
@@ -82,7 +82,7 @@ namespace ADOLibrary.Repositories
         public List<Product> GetAll()
         {
             var result = new List<Product>();
-            using SqlConnection connection = new(connectionString);
+            using SqlConnection connection = new(ConnectionString);
 
             var queryString = "SELECT * FROM dbo.Product ";
 
@@ -116,7 +116,7 @@ namespace ADOLibrary.Repositories
 
         public async Task Insert(Product product)
         {
-            using SqlConnection connection = new(connectionString);
+            using SqlConnection connection = new(ConnectionString);
             connection.Open();
 
             var command = connection.CreateCommand();
@@ -146,7 +146,7 @@ namespace ADOLibrary.Repositories
 
         public async Task Update(Product product)
         {
-            using SqlConnection connection = new(connectionString);
+            using SqlConnection connection = new(ConnectionString);
             connection.Open();
 
             var command = connection.CreateCommand();
