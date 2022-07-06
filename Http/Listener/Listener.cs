@@ -49,9 +49,8 @@ namespace Listener
             switch (request.RawUrl)
             {
                 case "/MyName":
-                    //Console.WriteLine("Write your name");
-                    // var name = Console.ReadLine();
-                    var name = "Maria";
+                    Console.WriteLine("Write your name");
+                    var name = Console.ReadLine();
                     response.StatusCode = 200;
                     CreateResponse(response, name);
                     break;
@@ -75,6 +74,9 @@ namespace Listener
                     response.StatusCode = 500;
                     CreateResponse(response, "ServerError called");
                     break;
+                case "/MyNameByHeader":
+                    GetMyNameByHeader(response);
+                    break;
             }
 
             context.Response.Close();
@@ -87,6 +89,15 @@ namespace Listener
             var output = listenerResponse.OutputStream;
             output.Write(buffer, 0, buffer.Length);
             output.Close();
+        }
+
+        public static void GetMyNameByHeader(HttpListenerResponse listenerResponse)
+        {
+            listenerResponse.StatusCode = 200;
+            var header = "X-MyName";
+            Console.WriteLine("Write your name");
+            var name = Console.ReadLine(); 
+            listenerResponse.Headers.Add(header, name);
         }
     }
 }
