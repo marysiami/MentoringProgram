@@ -18,8 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ADOLibrary\ADOLibrary.csproj" />
-    <ProjectReference Include="..\ADOLibrary\ADOLibrary.csproj" />
+    <ProjectReference Include="..\ORMLibrary\ORMLibrary.csproj" />
   </ItemGroup>
 
 </Project>
