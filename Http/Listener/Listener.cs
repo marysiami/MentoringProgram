@@ -77,6 +77,9 @@ namespace Listener
                 case "/MyNameByHeader":
                     GetMyNameByHeader(response);
                     break;
+                case "/MyNameByCookies":
+                    MyNameByCookies(response);
+                    break;
             }
 
             context.Response.Close();
@@ -98,6 +101,15 @@ namespace Listener
             Console.WriteLine("Write your name");
             var name = Console.ReadLine(); 
             listenerResponse.Headers.Add(header, name);
+        }
+
+        public static void MyNameByCookies(HttpListenerResponse listenerResponse)
+        {
+            listenerResponse.StatusCode = 200;
+            var key = "MyName";
+            Console.WriteLine("Write your name");
+            var name = Console.ReadLine();
+            listenerResponse.Cookies.Add(new Cookie(key, name));
         }
     }
 }
