@@ -1,4 +1,4 @@
-﻿@model List<ProductViewModel>
+﻿@model List<ListProductViewModel>
 @{
     ViewData["Title"] = "Products Page";
 }
@@ -37,6 +37,9 @@
                     <td> @product.UnitPrice </td>
                     <td> @product.UnitsOnOrder </td>
                     <td> @product.ReorderLevel </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = @product.ProductID })   
+                    </td>
                 </tr>
             }   
         </tbody>

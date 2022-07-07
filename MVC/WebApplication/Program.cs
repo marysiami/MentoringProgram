@@ -3,6 +3,7 @@ using MyWebApplication;
 using MyWebApplication.Configuration;
 using MyWebApplication.Interfaces;
 using MyWebApplication.Repositories;
+using MyWebApplication.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 IConfigurationRoot configuration = new ConfigurationBuilder()
@@ -22,6 +23,8 @@ builder.Services.AddSingleton(productPageConfiguration);
 builder.Services.AddDbContext<MyDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 var app = builder.Build();
 
