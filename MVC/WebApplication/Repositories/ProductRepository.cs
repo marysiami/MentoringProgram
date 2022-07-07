@@ -4,14 +4,15 @@ using MyWebApplication.Models;
 namespace MyWebApplication.Repositories
 {
     public class ProductRepository : IProductRepository
-    {
+    {        
         private MyDbContext _dbContext;
         public ProductRepository(MyDbContext context)
         {
             _dbContext = context;
         }
-        public List<ProductViewModel> GetAll()
+        public List<ProductViewModel> GetAll(int limit)
         {
+           
             var result = new List<ProductViewModel>();
             using (_dbContext)
             {
@@ -35,7 +36,11 @@ namespace MyWebApplication.Repositories
                                         CategoryName = c.CategoryName,
                                         SupplierName = s.CompanyName
                                     });
-
+                    
+                    if (limit > 0)
+                    {
+                        products = products.Take(limit);
+                    }                   
 
                     foreach (var productInfo in products)
                     {

@@ -4,6 +4,6 @@ namespace MyWebApplication.Interfaces
 {
     public interface IProductRepository
     {
-        List<ProductViewModel> GetAll();
+        List<ProductViewModel> GetAll(int limit);
     }
 }

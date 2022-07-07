@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MyWebApplication;
+using MyWebApplication.Configuration;
 using MyWebApplication.Interfaces;
 using MyWebApplication.Repositories;
 
@@ -12,6 +13,12 @@ IConfigurationRoot configuration = new ConfigurationBuilder()
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 var connectionString = configuration.GetConnectionString("Northwind");
+
+var productPageConfiguration = new ProductPageConfiguration();
+productPageConfiguration.ItemsPerPage = configuration.GetValue<int>("MaxProductsPerPage");
+
+builder.Services.AddSingleton(productPageConfiguration);
+
 builder.Services.AddDbContext<MyDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
