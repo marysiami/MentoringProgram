@@ -22,9 +22,9 @@ namespace MyWebApiApplication.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetAll()
+        public JsonResult GetAll(int? pageNumber, int? pageSize, int? categoyId)
         {
-            var model = ProductRepository.GetAll();
+            var model = ProductRepository.GetAll(pageNumber, pageSize, categoyId);
             return new JsonResult(model);
         }
 

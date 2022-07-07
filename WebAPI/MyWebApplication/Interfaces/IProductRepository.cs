@@ -8,6 +8,6 @@ namespace MyWebApiApplication.Interfaces
         Task Update(Product product);
         Task Delete(Product product);
         Product GetById(int id);
-        List<Product> GetAll();
+        List<Product> GetAll(int? pageNumber, int? pageSize, int? categoyId);
     }
 }

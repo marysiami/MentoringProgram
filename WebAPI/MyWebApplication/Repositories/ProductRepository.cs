@@ -10,7 +10,7 @@ namespace MyWebApiApplication.Repositories
         {
             _dbContext = context;
         }
-        public List<Product> GetAll()
+        public List<Product> GetAll(int? pageNumber, int? pageSize, int? categoyId)
         {           
             var result = new List<Product>();
             
@@ -44,7 +44,26 @@ namespace MyWebApiApplication.Repositories
                     CategoryID = productInfo.CategoryID,
                     SupplierID = productInfo.SupplierID
                 });
-            } 
+            }
+
+
+            if (categoyId != null)
+            {
+                result = result.Where(x => x.CategoryID == categoyId).ToList();
+            }
+            if (pageSize == null)
+            {
+                pageSize = 10;
+            }
+            if (pageNumber < 0 || pageNumber == null)
+            {
+                pageNumber = 0;
+            }
+
+            var resultPages = result.partition((int)pageSize);
+
+            result = resultPages[(int)pageNumber];
+
             return result;           
         }
 
