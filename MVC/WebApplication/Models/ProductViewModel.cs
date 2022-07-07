@@ -1,13 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-namespace MyWebApplication.Models
+﻿namespace MyWebApplication.Models
 {
-    public class Product
+    public class ProductViewModel
     {
-        [Key]
         public int ProductID { get; set; }
-        public string ProductName { get; set; }      
-        public int SupplierID { get; set; }  
-        public int CategoryID { get; set; }
+        public string ProductName { get; set; }
+        public string SupplierName { get; set; }
+        public string CategoryName { get; set; }
         public string QuantityPerUnit { get; set; }
         public decimal UnitPrice { get; set; }
         public short UnitsInStock { get; set; }

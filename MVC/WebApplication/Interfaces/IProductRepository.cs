@@ -1,6 +1,9 @@
-﻿namespace MyWebApplication.Interfaces
+﻿using MyWebApplication.Models;
+
+namespace MyWebApplication.Interfaces
 {
-    public class IProductRepository
+    public interface IProductRepository
     {
+        List<ProductViewModel> GetAll();
     }
 }

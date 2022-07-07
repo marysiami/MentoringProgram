@@ -83,7 +83,7 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "ORMDatabase.Tests", "ORM\OR
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MVC", "MVC", "{5407D6ED-9B59-4DD3-9568-DDE21A334EC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyWebApplication", "MVC\WebApplication\MyWebApplication.csproj", "{3B8C29E6-F0F1-4421-91BF-482A9AF927E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyWebApplication", "MVC\WebApplication\MyWebApplication.csproj", "{3B8C29E6-F0F1-4421-91BF-482A9AF927E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

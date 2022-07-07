@@ -1,8 +1,11 @@
-﻿namespace MyWebApplication.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MyWebApplication.Models
 {
     public class Supplier
     {
-        string SupplierID { get; set; }
-        string CompanyName { get; set; }
+        [Key]
+        public int SupplierID { get; set; }
+        public string CompanyName { get; set; }
     }
 }
