@@ -85,6 +85,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MVC", "MVC", "{5407D6ED-9B5
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyWebApplication", "MVC\WebApplication\MyWebApplication.csproj", "{3B8C29E6-F0F1-4421-91BF-482A9AF927E8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "JS", "JS", "{B84E7CC6-2223-44DB-BD6C-54F3DDFE9911}"
+	ProjectSection(SolutionItems) = preProject
+		Script.js = Script.js
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
