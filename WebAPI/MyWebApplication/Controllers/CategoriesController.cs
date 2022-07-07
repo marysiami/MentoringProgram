@@ -29,7 +29,7 @@ namespace MyWebApiApplication.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Category category)
+        public async Task<IActionResult> Create([FromBody] Category category)
         {
             await CategoryRepository.Create(category);
 

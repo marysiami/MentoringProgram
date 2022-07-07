@@ -29,7 +29,7 @@ namespace MyWebApiApplication.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Product product)
+        public async Task<IActionResult> Create([FromBody] Product product)
         {
             await ProductRepository.Create(product);
 
